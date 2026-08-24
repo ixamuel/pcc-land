@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Land Pattern Overlay Generator</title>
+<style>
+  :root{--blue:#0033a0;--red:#d10b0b;--ink:#111827;--muted:#64748b;--line:#dbe3ee;--panel:#f8fafc}
+  *{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#eef2f7}
+  .app{max-width:1500px;margin:auto;padding:20px}.header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}
+  h1{font-size:24px;margin:0}.subtitle{color:var(--muted);font-size:14px;margin-top:5px}
+  .layout{display:grid;grid-template-columns:430px minmax(0,1fr);gap:18px}.panel,.preview{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 5px 20px #0f172a10}
+  .panel{padding:18px;max-height:calc(100vh - 105px);overflow:auto}.preview{padding:12px;display:flex;flex-direction:column;min-height:700px}
+  .section{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}.section:first-child{border-top:0;padding-top:0;margin-top:0}
+  h2{font-size:16px;margin:0 0 12px}.blue{color:var(--blue)}.red{color:var(--red)}
+  label{font-size:12px;font-weight:700;color:#334155;display:block;margin-bottom:5px}.field{margin-bottom:10px}
+  input{width:100%;border:1px solid #cbd5e1;border-radius:7px;padding:9px 10px;font-size:14px;background:#fff}
+  input:focus{outline:2px solid #93c5fd;border-color:#2563eb}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .dim-grid{display:grid;grid-template-columns:repeat(5,minmax(52px,1fr));gap:7px;align-items:end}.dim-grid .field{margin-bottom:4px}.dim-grid label{text-align:center;font-size:13px}.dim-grid input{text-align:center;padding:9px 4px;font-variant-numeric:tabular-nums}.dimension-caption{font-size:11px;color:var(--muted);margin:-3px 0 8px}
+  .buttons{display:flex;gap:9px;flex-wrap:wrap}.btn{border:0;border-radius:8px;padding:10px 14px;font-weight:700;cursor:pointer;background:#0f172a;color:#fff}.btn.secondary{background:#e2e8f0;color:#0f172a}.btn:hover{filter:brightness(.95)}
+  .note{font-size:12px;line-height:1.45;color:var(--muted);background:var(--panel);padding:10px;border-radius:8px;margin-top:12px}
+  #stage{width:100%;flex:1;display:flex;align-items:center;justify-content:center;overflow:auto;background:#fff}
+  #drawing{width:100%;height:auto;min-width:760px;display:block}.toolbar{display:flex;justify-content:space-between;align-items:center;padding:3px 5px 10px;font-size:13px;color:var(--muted)}.warning-card{display:none;margin:0 5px 6px;padding:6px 10px;border:1px solid #dc2626;border-left:4px solid #b91c1c;border-radius:6px;background:#fef2f2;color:#991b1b;font-size:12px;font-weight:700;line-height:1.2;box-shadow:0 1px 4px #991b1b14;white-space:nowrap;overflow-x:auto}.warning-card.show{display:block}.warning-card-title{display:inline;color:#7f1d1d;font-size:12px}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}.panel{max-height:none}.preview{min-height:550px}}
+  @media print{body{background:#fff}.header,.panel,.toolbar{display:none}.app{max-width:none;padding:0}.layout{display:block}.preview{border:0;box-shadow:none;padding:0}#drawing{min-width:0}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header"><div><h1>Land Pattern Overlay Generator</h1><div class="subtitle">Enter dimensions in millimetres. Panasonic is blue; competitor is red.</div></div></div>
+  <div class="layout">
+    <aside class="panel">
+      <div class="section"><h2>Document</h2>
+        <div class="field"><label for="mainTitle">Main title</label><input id="mainTitle" value="Recommended Land Pattern"></div>
+        <div class="field"><label for="comment">Comment</label><input id="comment" value="All dimensions are in mm. Overlay shows the Panasonic solder terminal centred on the competitor recommended land pattern."></div>
+      </div>
+      <div class="section"><h2 class="red">Competitor / Land pattern</h2>
+        <div class="grid2"><div class="field"><label>Name</label><input id="compName" value="Bourns"></div><div class="field"><label>Part no. (optional)</label><input id="compPart" placeholder="e.g. SRP... "></div></div>
+        <div class="dimension-caption">Dimensions (mm)</div><div class="dim-grid">
+          <div class="field"><label>L</label><input id="cL" type="number" step="0.01" min="0.01" value="3.40"></div>
+          <div class="field"><label>P1</label><input id="cP1" type="number" step="0.01" min="0" value="2.70"></div>
+          <div class="field"><label>P2</label><input id="cP2" type="number" step="0.01" min="0.01" value="8.40"></div>
+          <div class="field"><label>W1</label><input id="cW1" type="number" step="0.01" min="0.01" value="2.85"></div>
+          <div class="field"><label>W2</label><input id="cW2" type="number" step="0.01" min="0.01" value="2.85"></div>
+        </div>
+      </div>
+      <div class="section"><h2 class="blue">Panasonic solder terminal</h2>
+        <div class="field"><label>Panasonic part no.</label><input id="panPart" value="ETQP4M4R7KVN"></div>
+        <div class="dimension-caption">Dimensions (mm)</div><div class="dim-grid">
+          <div class="field"><label>L</label><input id="pL" type="number" step="0.01" min="0.01" value="3.18"></div>
+          <div class="field"><label>P1</label><input id="pP1" type="number" step="0.01" min="0" value="4.32"></div>
+          <div class="field"><label>P2</label><input id="pP2" type="number" step="0.01" min="0.01" value="6.40"></div>
+          <div class="field"><label>W1</label><input id="pW1" type="number" step="0.01" min="0.01" value="1.04"></div>
+          <div class="field"><label>W2</label><input id="pW2" type="number" step="0.01" min="0.01" value="1.04"></div>
+        </div>
+      </div>
+      <div class="section"><div class="buttons"><button class="btn" onclick="downloadPNG()">Export PNG</button><button class="btn" onclick="downloadSVG()">Export SVG</button><button class="btn secondary" onclick="window.print()">Print / PDF</button></div>
+      <div class="note"><b>Geometry:</b> P2 is the total outside span. P1 is the inner gap. W1 and W2 are the left and right widths. Each pair is horizontally centred on the same origin. The comparison table has its own fixed area above the diagram. A single unit note is shown above the table, avoiding repeated mm labels. The diagram intentionally has no dotted centre line.</div></div>
+    </aside>
+    <main class="preview"><div class="toolbar"><span>Live preview</span></div><div id="warning" class="warning-card" role="alert" aria-live="polite"></div><div id="stage"><svg id="drawing" viewBox="0 0 1200 980" xmlns="http://www.w3.org/2000/svg"></svg></div></main>
+  </div>
+</div>
+<script>
+const BLUE='#0033a0', RED='#d10b0b', INK='#111827';
+const ids=['mainTitle','comment','compName','compPart','cL','cP1','cP2','cW1','cW2','panPart','pL','pP1','pP2','pW1','pW2'];
+ids.forEach(id=>document.getElementById(id).addEventListener('input',draw));
+const v=id=>document.getElementById(id).value.trim(); const n=id=>Math.max(0,parseFloat(v(id))||0); const f=x=>x.toFixed(2);
+function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function line(x1,y1,x2,y2,c,dash=''){return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="2" ${dash?`stroke-dasharray="${dash}"`:''}/>`}
+function txt(x,y,s,c=INK,size=18,anchor='middle',weight=700){return `<text x="${x}" y="${y}" fill="${c}" font-family="Arial,Helvetica,sans-serif" font-size="${size}" font-weight="${weight}" text-anchor="${anchor}">${esc(s)}</text>`}
+function arrow(x1,y1,x2,y2,c,label,dy=-10){return `${line(x1,y1,x2,y2,c)}<polygon points="${x1},${y1} ${x1+12},${y1-7} ${x1+12},${y1+7}" fill="${c}"/><polygon points="${x2},${y2} ${x2-12},${y2-7} ${x2-12},${y2+7}" fill="${c}"/>${txt((x1+x2)/2,y1+dy,label,c,18)}`}
+function varrow(x,y1,y2,c,label,side=1){let tx=x+side*17,anch=side>0?'start':'end';return `${line(x,y1,x,y2,c)}<polygon points="${x},${y1} ${x-7},${y1+12} ${x+7},${y1+12}" fill="${c}"/><polygon points="${x},${y2} ${x-7},${y2-12} ${x+7},${y2-12}" fill="${c}"/>${txt(tx,(y1+y2)/2+6,label,c,17,anch)}`}
+function draw(){
+ const c={L:n('cL'),P1:n('cP1'),P2:n('cP2'),W1:n('cW1'),W2:n('cW2')},p={L:n('pL'),P1:n('pP1'),P2:n('pP2'),W1:n('pW1'),W2:n('pW2')};
+ let warns=[]; if(Math.abs(c.P1+c.W1+c.W2-c.P2)>.03)warns.push('Competitor: W1 + P1 + W2 does not equal P2');if(Math.abs(p.P1+p.W1+p.W2-p.P2)>.03)warns.push('Panasonic: W1 + P1 + W2 does not equal P2');const warningCard=document.getElementById('warning');if(warns.length){warningCard.innerHTML='<span class="warning-card-title">Dimension Mismatch: </span>'+warns.map(esc).join(' | ');warningCard.classList.add('show')}else{warningCard.innerHTML='';warningCard.classList.remove('show')}
+ const maxSpan=Math.max(c.P2,p.P2,.1), maxL=Math.max(c.L,p.L,.1), sx=Math.min(76,650/maxSpan), sy=Math.min(105,330/maxL); const cx=790, cy=590;
+ function geom(d){let outerL=cx-d.P2*sx/2,outerR=cx+d.P2*sx/2,innerL=cx-d.P1*sx/2,innerR=cx+d.P1*sx/2,h=d.L*sy;return {outerL,outerR,innerL,innerR,top:cy-h/2,bottom:cy+h/2,h};}
+ const cg=geom(c),pg=geom(p); let compLabel=(v('compName')||'Competitor')+(v('compPart')?' '+v('compPart'):''); let pan=v('panPart')||'Panasonic part';
+ let s=`<rect width="1200" height="820" fill="white"/>${txt(650,40,(v('mainTitle')||'Recommended Land Pattern'),INK,29)}${txt(650,70,'vs',INK,20)}${txt(650,102,pan+' Solder Terminal Overlay',BLUE,25)}${txt(1166,128,'All dimensions are in mm',INK,14,'end',600)}`;
+ // Live-preview comparison table
+ const tx=34, ty=142, tw=1132, nameW=382, colW=150, rowH=38;
+ s+=`<rect x="${tx}" y="${ty}" width="${tw}" height="${rowH*3}" rx="4" fill="white" stroke="#94a3b8" stroke-width="1.5"/>`;
+ s+=`<rect x="${tx}" y="${ty}" width="${tw}" height="${rowH}" fill="#eef2f7"/>`;
+ [tx+nameW,tx+nameW+colW,tx+nameW+colW*2,tx+nameW+colW*3,tx+nameW+colW*4].forEach(x=>s+=line(x,ty,x,ty+rowH*3,'#94a3b8'));
+ [ty+rowH,ty+rowH*2].forEach(y=>s+=line(tx,y,tx+tw,y,'#94a3b8'));
+ s+=txt(tx+12,ty+25,'Part number',INK,15,'start'); ['L','P1','P2','W1','W2'].forEach((k,i)=>s+=txt(tx+nameW+colW*i+colW/2,ty+25,k,INK,15));
+ s+=`<rect x="${tx+1}" y="${ty+rowH+1}" width="8" height="${rowH-2}" fill="${RED}"/><rect x="${tx+1}" y="${ty+rowH*2+1}" width="8" height="${rowH-2}" fill="${BLUE}"/>`;
+ s+=txt(tx+18,ty+rowH+25,compLabel+' land pattern',RED,14,'start'); s+=txt(tx+18,ty+rowH*2+25,'Panasonic '+pan+' terminal',BLUE,14,'start');
+ ['L','P1','P2','W1','W2'].forEach((k,i)=>{s+=txt(tx+nameW+colW*i+colW/2,ty+rowH+25,f(c[k]),RED,14);s+=txt(tx+nameW+colW*i+colW/2,ty+rowH*2+25,f(p[k]),BLUE,14)});
+ s+=line(34,286,1166,286,'#cbd5e1');
+ // competitor pads
+ s+=`<rect x="${cg.outerL}" y="${cg.top}" width="${c.W1*sx}" height="${cg.h}" fill="#d10b0b0b" stroke="${RED}" stroke-width="3"/><rect x="${cg.innerR}" y="${cg.top}" width="${c.W2*sx}" height="${cg.h}" fill="#d10b0b0b" stroke="${RED}" stroke-width="3"/>`;
+ // Panasonic pads
+ s+=`<rect x="${pg.outerL}" y="${pg.top}" width="${p.W1*sx}" height="${pg.h}" fill="#0033a014" stroke="${BLUE}" stroke-width="3"/><rect x="${pg.innerR}" y="${pg.top}" width="${p.W2*sx}" height="${pg.h}" fill="#0033a014" stroke="${BLUE}" stroke-width="3"/>`;
+ // P2 arrows
+ let yC=316,yP=361;s+=line(cg.outerL,cg.top,cg.outerL,yC,RED,'7 5')+line(cg.outerR,cg.top,cg.outerR,yC,RED,'7 5')+arrow(cg.outerL,yC,cg.outerR,yC,RED,`P2 = ${f(c.P2)}`,-12);
+ s+=line(pg.outerL,pg.top,pg.outerL,yP,BLUE,'7 5')+line(pg.outerR,pg.top,pg.outerR,yP,BLUE,'7 5')+arrow(pg.outerL,yP,pg.outerR,yP,BLUE,`P2 = ${f(p.P2)}`,-12);
+ // vertical L
+ s+=line(cg.outerL,cg.top,cg.outerL-80,cg.top,RED,'7 5')+line(cg.outerL,cg.bottom,cg.outerL-80,cg.bottom,RED,'7 5')+varrow(cg.outerL-65,cg.top,cg.bottom,RED,`L = ${f(c.L)}`,-1);
+ s+=line(pg.outerR,pg.top,pg.outerR+75,pg.top,BLUE,'7 5')+line(pg.outerR,pg.bottom,pg.outerR+75,pg.bottom,BLUE,'7 5')+varrow(pg.outerR+60,pg.top,pg.bottom,BLUE,`L = ${f(p.L)}`,1);
+ // bottom dimensions
+ let yc=850,yp=925; [cg.outerL,cg.innerL,cg.innerR,cg.outerR].forEach(x=>s+=line(x,cg.bottom,x,yc+16,RED,'7 5'));s+=arrow(cg.outerL,yc,cg.innerL,yc,RED,`W1 = ${f(c.W1)}`,-10)+arrow(cg.innerL,yc,cg.innerR,yc,RED,`P1 = ${f(c.P1)}`,-10)+arrow(cg.innerR,yc,cg.outerR,yc,RED,`W2 = ${f(c.W2)}`,-10);
+ [pg.outerL,pg.innerL,pg.innerR,pg.outerR].forEach(x=>s+=line(x,pg.bottom,x,yp+14,BLUE,'7 5'));s+=arrow(pg.outerL,yp,pg.innerL,yp,BLUE,`W1 = ${f(p.W1)}`,-10)+arrow(pg.innerL,yp,pg.innerR,yp,BLUE,`P1 = ${f(p.P1)}`,-10)+arrow(pg.innerR,yp,pg.outerR,yp,BLUE,`W2 = ${f(p.W2)}`,-10);
+ let comment=v('comment');s+=txt(36,835,'Comment:',INK,17,'start'); let words=comment.split(' '),lines=[],cur='';words.forEach(w=>{if((cur+' '+w).length>39){lines.push(cur);cur=w}else cur+=(cur?' ':'')+w});if(cur)lines.push(cur);lines.slice(0,4).forEach((q,i)=>s+=txt(36,860+i*21,q,INK,15,'start',400));
+ document.getElementById('drawing').innerHTML=s;
+}
+function svgText(){let svg=document.getElementById('drawing').cloneNode(true);svg.setAttribute('xmlns','http://www.w3.org/2000/svg');return new XMLSerializer().serializeToString(svg)}
+function fileBase(){return (v('panPart')||'land-pattern-overlay').replace(/[^a-z0-9_-]+/gi,'_')+'_overlay'}
+function downloadSVG(){let blob=new Blob([svgText()],{type:'image/svg+xml'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fileBase()+'.svg';a.click();URL.revokeObjectURL(a.href)}
+function downloadPNG(){let source=svgText(),img=new Image(),url=URL.createObjectURL(new Blob([source],{type:'image/svg+xml'}));img.onload=()=>{let canvas=document.createElement('canvas');canvas.width=2400;canvas.height=1960;let ctx=canvas.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);URL.revokeObjectURL(url);canvas.toBlob(blob=>{let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fileBase()+'.png';a.click();URL.revokeObjectURL(a.href)},'image/png')};img.src=url}
+draw();
+</script>
+</body>
+</html>
