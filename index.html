@@ -70,7 +70,7 @@
             <button type="button" id="pnToggle" class="combo-btn" aria-label="Show part numbers" tabindex="-1">&#9662;</button>
             <ul id="pnList" class="combo-list" role="listbox" aria-label="Panasonic part numbers" hidden></ul>
           </div>
-          <div id="pnHint" class="hint">Select or type a part number, then press Auto resolve to fill L, P2, W1 and W2 from the datasheet. Typing the three-letter suffix (e.g. KFN) also works, or enter the dimensions by hand.</div>
+          <div id="pnHint" class="hint">Select a part number to auto-fill L, P2, W1 and W2 from the datasheet, then P1 is calculated. Typing the three-letter suffix (e.g. KFN) also works, or enter the dimensions by hand.</div>
           <div id="pnStatus" class="status" role="status" aria-live="polite" hidden></div>
         </div>
         <div class="dimension-caption">Dimensions (mm)</div><div class="dim-grid">
@@ -84,7 +84,7 @@
         <div class="buttons" style="margin-top:10px"><button class="btn sm" type="button" id="autoResolve">Auto resolve</button><button class="btn secondary sm" type="button" id="clearPan">Clear</button></div>
       </div>
       <div class="section"><div class="buttons"><button class="btn" onclick="downloadPNG()">Export PNG</button><button class="btn" onclick="downloadSVG()">Export SVG</button><button class="btn secondary" onclick="window.print()">Print / PDF</button></div>
-      <div class="note"><b>Part numbers:</b> pick a Panasonic part number (or type the three-letter suffix such as KFN) and press <b>Auto resolve</b> to fill L, P2, W1 and W2 from the datasheet; the rest is solved. <b>Solver:</b> enter any two of <b>W1&nbsp;+&nbsp;W2</b>, <b>P1</b> or <b>P2</b> and the third is calculated &mdash; the field being solved is tagged <i>solved</i>. Typing in the solved field hands the calculation over to another field, so P1 + W1 + W2 = P2 always holds. <b>Geometry:</b> P2 is the total outside span, P1 is the inner gap, W1 and W2 are the left and right widths. Each pair is horizontally centred on the same origin.</div></div>
+      <div class="note"><b>Part numbers:</b> pick a Panasonic part number (or type the three-letter suffix such as KFN) and L, P2, W1 and W2 are filled from the datasheet; the rest is solved. <b>Auto resolve</b> re-applies the datasheet values at any time. <b>Solver:</b> enter any two of <b>W1&nbsp;+&nbsp;W2</b>, <b>P1</b> or <b>P2</b> and the third is calculated &mdash; the field being solved is tagged <i>solved</i>. Typing in the solved field hands the calculation over to another field, so P1 + W1 + W2 = P2 always holds. <b>Geometry:</b> P2 is the total outside span, P1 is the inner gap, W1 and W2 are the left and right widths. Each pair is horizontally centred on the same origin.</div></div>
     </aside>
     <main class="preview"><div class="toolbar"><span>Live preview</span></div><div id="warning" class="warning-card" role="alert" aria-live="polite"></div><div id="stage"><svg id="drawing" viewBox="0 0 1200 980" xmlns="http://www.w3.org/2000/svg"></svg></div></main>
   </div>
@@ -254,9 +254,17 @@ function applyResolved(res){
   status.hidden=true;
   hint.hidden=false;hint.classList.remove('alert');
   btn.classList.toggle('attention',!!res);
-  hint.textContent=res?('Press Auto resolve to fill L, P2, W1 and W2 for '+input.value.trim().toUpperCase()+'.'):DEFAULT_HINT;
+  hint.textContent=res?('Press Enter to fill L, P2, W1 and W2 for '+input.value.trim().toUpperCase()+'.'):DEFAULT_HINT;
  }
- function choose(pn){input.value=pn;close();markPending();refresh();}
+ function choose(pn){input.value=pn;close();resolveNow();}
+ function resolveNow(){
+  const res=resolveQuery(input.value);
+  if(!res)return false;
+  byId('autoResolve').classList.remove('attention');
+  byId('pnHint').classList.remove('alert');
+  applyResolved(res);refresh();
+  return true;
+ }
  input.addEventListener('focus',open);
  input.addEventListener('blur',close);
  input.addEventListener('click',open);
@@ -266,16 +274,16 @@ function applyResolved(res){
  list.addEventListener('mousedown',e=>{const li=e.target.closest('li[data-pn]');if(!li)return;e.preventDefault();choose(li.getAttribute('data-pn'));});
  input.addEventListener('keydown',e=>{
   if(e.key==='ArrowDown'||e.key==='ArrowUp'){if(list.hidden)open();if(!shown.length)return;e.preventDefault();active=(active+(e.key==='ArrowDown'?1:-1)+shown.length)%shown.length;const el=list.querySelector('#pnOpt'+active);if(el){Array.prototype.forEach.call(list.children,c=>c.setAttribute('aria-selected','false'));el.setAttribute('aria-selected','true');el.scrollIntoView({block:'nearest'});}return;}
-  if(e.key==='Enter'){if(!list.hidden&&active>-1&&shown[active]){e.preventDefault();choose(shown[active].pn);return;}close();markPending();return;}
+  if(e.key==='Enter'){if(!list.hidden&&active>-1&&shown[active]){e.preventDefault();choose(shown[active].pn);return;}close();if(resolveNow()){e.preventDefault();return;}markPending();return;}
   if(e.key==='Escape')close();
  });
  input.addEventListener('change',()=>{if(!input.value.trim()){applyResolved(null);refresh();}else markPending();});
  document.addEventListener('mousedown',e=>{if(!e.target.closest('.combo'))close();});
  byId('autoResolve').addEventListener('click',()=>{
-  const res=resolveQuery(input.value);
-  if(!res){byId('pnHint').hidden=false;byId('pnHint').classList.add('alert');byId('pnHint').textContent='Enter or select a Panasonic part number first \u2014 for example ETQP4M4R7KVN, or just the suffix KFN.';input.focus();open();return;}
-  byId('autoResolve').classList.remove('attention');
-  byId('pnHint').classList.remove('alert');applyResolved(res);refresh();
+  if(!resolveNow()){
+   byId('pnHint').hidden=false;byId('pnHint').classList.add('alert');byId('pnHint').textContent='Enter or select a Panasonic part number first \u2014 for example ETQP4M4R7KVN, or just the suffix KFN.';
+   input.focus();open();
+  }
  });
  byId('clearPan').addEventListener('click',()=>{
   input.value='';['pL','pP1','pP2','pW1','pW2'].forEach(id=>byId(id).value='');

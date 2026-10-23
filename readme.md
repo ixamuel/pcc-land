@@ -189,8 +189,8 @@ part-number list (all 150 catalogue parts from `Inductor all data.xlsx`) feeds
 suffix (`ETQP4M3R3KFN` → `KFN` → `AGL0000C73-LE.pdf` page 6).
 
 - Grey advice text is shown before anything is entered.
-- Selecting or typing a part number only stages the number; the dimensions are
-  filled when `Auto resolve` is pressed, so nothing changes under the user's hands.
+- Selecting a part number from the list (or pressing Enter on a typed one)
+  resolves it immediately; `Auto resolve` re-applies the values at any time.
 - Typing just the suffix (`KFN`) resolves the shared terminal geometry.
 - A provenance chip names the drawing, or an amber note explains that no
   drawing is on file and asks for the dimensions to be typed.

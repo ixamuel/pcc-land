@@ -177,10 +177,10 @@ For `CVM` and `DTV`, `P2` still resolves from the workbook body length (7.90 and
 
 - **Part-number combobox** — all 150 catalogue parts, filter-as-you-type on the
   full part number or on the suffix, arrow keys + <kbd>Enter</kbd>, <kbd>Esc</kbd> closes.
-  Choosing a part only puts the number in the box: nothing is filled in yet.
-- **Auto resolve button** — the only thing that applies datasheet values. It
-  fills `L`, `P2`, `W1` and `W2` for whatever is in the box and turns blue-tinted
-  whenever the typed part number has not been resolved yet.
+  Picking a suggestion (or pressing <kbd>Enter</kbd> on a resolved number) applies
+  the datasheet values immediately.
+- **Auto resolve button** — re-applies the values for whatever is in the box,
+  and turns blue-tinted while a typed part number has not been resolved yet.
 - **Grey advice text** — shown before any selection; replaces itself with a blue
   provenance chip (`Suffix KFN · PCC-M0648M-LE · verified · AGL0000C73-LE.pdf p6`)
   or an amber warning when the drawing is missing.
