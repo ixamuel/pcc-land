@@ -175,6 +175,18 @@ For `CVM` and `DTV`, `P2` still resolves from the workbook body length (7.90 and
 
 ## 6. UI behaviour in `index.html`
 
+The **competitor** side carries the same three-group solver and the same
+`Auto resolve` / `Clear` buttons:
+
+- `Auto resolve` fills whichever of `W1 + W2`, `P1`, `P2` is missing and reports
+  the outcome in a status line (`Solved P1 = …`, `Consistent — W1 + P1 + W2 = P2`,
+  or an amber reminder to enter two values). There is no competitor library —
+  the values come from the competitor datasheet and are typed in.
+- `Clear` empties `L`, `P1`, `P2`, `W1`, `W2` and the part number, keeping the
+  competitor name.
+
+The **Panasonic** side adds the catalogue lookup on top:
+
 - **Part-number combobox** — all 150 catalogue parts, filter-as-you-type on the
   full part number or on the suffix, arrow keys + <kbd>Enter</kbd>, <kbd>Esc</kbd> closes.
   Picking a suggestion (or pressing <kbd>Enter</kbd> on a resolved number) applies
@@ -196,6 +208,10 @@ For `CVM` and `DTV`, `P2` still resolves from the workbook body length (7.90 and
 
   Typing into the solved field hands the calculation to another field (the two
   most recently edited groups are kept), so the relationship can never drift.
+  The field currently being typed in is never written to, so an intermediate
+  state such as `6.` cannot be overwritten mid-keystroke.
+  If a combination cannot be solved the hint explains why, e.g.
+  *“P2 (6.40) must be larger than P1 (9.00) to calculate W1 = W2 = (P2 − P1) / 2.”*
 - The existing `< 0.03 mm` mismatch card is unchanged; it is skipped while the
   Panasonic row is still incomplete.
 

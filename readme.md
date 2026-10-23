@@ -221,6 +221,13 @@ and as soon as two of them hold a value the third is calculated and badged
 Typing into the solved field hands the calculation over to another field, so the
 `solved` badge moves and `W1 + P1 + W2 = P2` can never drift.
 
+Both rows carry this solver. Each has its own `Auto resolve` and `Clear`:
+
+- Panasonic: `Auto resolve` re-applies the datasheet values for the part number.
+- Competitor: `Auto resolve` fills the missing value and reports the result
+  (`Solved P1 = 2.70 …` or `Consistent — W1 + P1 + W2 = P2 = 8.40 mm.`).
+- `Clear` empties that row's `L`, `P1`, `P2`, `W1`, `W2` (and the part number).
+
 The calculated box is read-only, tinted blue, and tagged `CALC`, so the
 `W1 + P1 + W2 = P2` relationship can never drift on the Panasonic side.
 

@@ -36,7 +36,9 @@
   .status[hidden]{display:none}.status.warn{background:#fffbeb;color:#92400e;border-color:#fcd34d}
   .calc-tag{display:none;font-size:9px;letter-spacing:.04em;text-transform:uppercase;color:#1d4ed8;background:#e0eaff;border-radius:4px;padding:1px 4px;margin-left:4px;vertical-align:middle}
   .calc-tag.on{display:inline-block}
+  .calc-tag.red{color:#b91c1c;background:#fee2e2}
   input.calc{background:#eef4ff;color:#1e3a8a;border-style:dashed;border-color:#93b4f5}
+  input.calc.red{background:#fef2f2;color:#991b1b;border-color:#fca5a5}
   input[readonly]{background:#eef4ff;color:#1e3a8a;border-style:dashed;cursor:not-allowed}
   #stage{width:100%;flex:1;display:flex;align-items:center;justify-content:center;overflow:auto;background:#fff}
   #drawing{width:100%;height:auto;min-width:760px;display:block}.toolbar{display:flex;justify-content:space-between;align-items:center;padding:3px 5px 10px;font-size:13px;color:var(--muted)}.warning-card{display:none;margin:0 5px 6px;padding:6px 10px;border:1px solid #dc2626;border-left:4px solid #b91c1c;border-radius:6px;background:#fef2f2;color:#991b1b;font-size:12px;font-weight:700;line-height:1.2;box-shadow:0 1px 4px #991b1b14;white-space:nowrap;overflow-x:auto}.warning-card.show{display:block}.warning-card-title{display:inline;color:#7f1d1d;font-size:12px}
@@ -57,11 +59,14 @@
         <div class="grid2"><div class="field"><label>Name</label><input id="compName" value="Bourns"></div><div class="field"><label>Part no. (optional)</label><input id="compPart" placeholder="e.g. SRP... "></div></div>
         <div class="dimension-caption">Dimensions (mm)</div><div class="dim-grid">
           <div class="field"><label>L</label><input id="cL" type="number" step="0.01" min="0.01" value="3.40"></div>
-          <div class="field"><label>P1</label><input id="cP1" type="number" step="0.01" min="0" value="2.70"></div>
-          <div class="field"><label>P2</label><input id="cP2" type="number" step="0.01" min="0.01" value="8.40"></div>
-          <div class="field"><label>W1</label><input id="cW1" type="number" step="0.01" min="0.01" value="2.85"></div>
-          <div class="field"><label>W2</label><input id="cW2" type="number" step="0.01" min="0.01" value="2.85"></div>
+          <div class="field"><label>P1<span class="calc-tag red" id="tagcP1">solved</span></label><input id="cP1" type="number" step="0.01" min="0" value="2.70"></div>
+          <div class="field"><label>P2<span class="calc-tag red" id="tagcP2">solved</span></label><input id="cP2" type="number" step="0.01" min="0.01" value="8.40"></div>
+          <div class="field"><label>W1<span class="calc-tag red" id="tagcW1">solved</span></label><input id="cW1" type="number" step="0.01" min="0.01" value="2.85"></div>
+          <div class="field"><label>W2<span class="calc-tag red" id="tagcW2">solved</span></label><input id="cW2" type="number" step="0.01" min="0.01" value="2.85"></div>
         </div>
+        <div id="compSolveHint" class="hint">Enter any two of W1 + W2, P1 or P2 &mdash; the third is calculated.</div>
+        <div id="compStatus" class="status" role="status" aria-live="polite" hidden></div>
+        <div class="buttons" style="margin-top:10px"><button class="btn sm" type="button" id="compResolve">Auto resolve</button><button class="btn secondary sm" type="button" id="compClear">Clear</button></div>
       </div>
       <div class="section"><h2 class="blue">Panasonic solder terminal</h2>
         <div class="field"><label for="panPart">Panasonic part no.</label>
@@ -96,7 +101,7 @@ window.PCC_CATALOG = {"generated":"2026-10-23","source":{"workbook":"Inductor al
 </script>
 <script>
 const BLUE='#0033a0', RED='#d10b0b', INK='#111827';
-const ids=['mainTitle','comment','compName','compPart','cL','cP1','cP2','cW1','cW2','panPart','pL'];
+const ids=['mainTitle','comment','compName','compPart','cL','panPart','pL'];
 ids.forEach(id=>document.getElementById(id).addEventListener('input',refresh));
 const v=id=>document.getElementById(id).value.trim(); const n=id=>Math.max(0,parseFloat(v(id))||0); const f=x=>x.toFixed(2);
 function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -105,7 +110,7 @@ function txt(x,y,s,c=INK,size=18,anchor='middle',weight=700){return `<text x="${
 function arrow(x1,y1,x2,y2,c,label,dy=-10){return `${line(x1,y1,x2,y2,c)}<polygon points="${x1},${y1} ${x1+12},${y1-7} ${x1+12},${y1+7}" fill="${c}"/><polygon points="${x2},${y2} ${x2-12},${y2-7} ${x2-12},${y2+7}" fill="${c}"/>${txt((x1+x2)/2,y1+dy,label,c,18)}`}
 function varrow(x,y1,y2,c,label,side=1){let tx=x+side*17,anch=side>0?'start':'end';return `${line(x,y1,x,y2,c)}<polygon points="${x},${y1} ${x-7},${y1+12} ${x+7},${y1+12}" fill="${c}"/><polygon points="${x},${y2} ${x-7},${y2-12} ${x+7},${y2-12}" fill="${c}"/>${txt(tx,(y1+y2)/2+6,label,c,17,anch)}`}
 function draw(){
- const c={L:n('cL'),P1:n('cP1'),P2:n('cP2'),W1:n('cW1'),W2:n('cW2')},p={L:n('pL'),P1:n('pP1'),P2:n('pP2'),W1:n('pW1'),W2:n('pW2')};const pReady=p.P2>0&&(p.W1>0||p.W2>0||p.P1>0);
+ const c={L:n('cL'),P1:n('cP1'),P2:n('cP2'),W1:n('cW1'),W2:n('cW2')},p={L:n('pL'),P1:n('pP1'),P2:n('pP2'),W1:n('pW1'),W2:n('pW2')};const pReady=p.P2>0&&p.W1>0&&p.W2>0;const cReady=c.P2>0&&c.W1>0&&c.W2>0;const pAny=p.P2>0||p.P1>0||p.W1>0||p.W2>0;
  let warns=[]; if(Math.abs(c.P1+c.W1+c.W2-c.P2)>.03)warns.push('Competitor: W1 + P1 + W2 does not equal P2');if(pReady&&Math.abs(p.P1+p.W1+p.W2-p.P2)>.03)warns.push('Panasonic: W1 + P1 + W2 does not equal P2');const warningCard=document.getElementById('warning');if(warns.length){warningCard.innerHTML='<span class="warning-card-title">Dimension Mismatch: </span>'+warns.map(esc).join(' | ');warningCard.classList.add('show')}else{warningCard.innerHTML='';warningCard.classList.remove('show')}
  const maxSpan=Math.max(c.P2,p.P2,.1), maxL=Math.max(c.L,p.L,.1), sx=Math.min(76,650/maxSpan), sy=Math.min(105,330/maxL); const cx=790, cy=590;
  function geom(d){let outerL=cx-d.P2*sx/2,outerR=cx+d.P2*sx/2,innerL=cx-d.P1*sx/2,innerR=cx+d.P1*sx/2,h=d.L*sy;return {outerL,outerR,innerL,innerR,top:cy-h/2,bottom:cy+h/2,h};}
@@ -119,21 +124,21 @@ function draw(){
  [ty+rowH,ty+rowH*2].forEach(y=>s+=line(tx,y,tx+tw,y,'#94a3b8'));
  s+=txt(tx+12,ty+25,'Part number',INK,15,'start'); ['L','P1','P2','W1','W2'].forEach((k,i)=>s+=txt(tx+nameW+colW*i+colW/2,ty+25,k,INK,15));
  s+=`<rect x="${tx+1}" y="${ty+rowH+1}" width="8" height="${rowH-2}" fill="${RED}"/><rect x="${tx+1}" y="${ty+rowH*2+1}" width="8" height="${rowH-2}" fill="${BLUE}"/>`;
- s+=txt(tx+18,ty+rowH+25,compLabel+' land pattern',RED,14,'start'); s+=txt(tx+18,ty+rowH*2+25,(pan?'Panasonic '+pan+' terminal':(pReady?'Panasonic terminal (manual entry)':'Panasonic terminal \u2013 not selected')),BLUE,14,'start');
- ['L','P1','P2','W1','W2'].forEach((k,i)=>{s+=txt(tx+nameW+colW*i+colW/2,ty+rowH+25,f(c[k]),RED,14);s+=txt(tx+nameW+colW*i+colW/2,ty+rowH*2+25,(pReady&&p[k]>0)?f(p[k]):'\u2013',BLUE,14)});
+ s+=txt(tx+18,ty+rowH+25,compLabel+' land pattern',RED,14,'start'); s+=txt(tx+18,ty+rowH*2+25,(pan?'Panasonic '+pan+' terminal':(pAny?'Panasonic terminal (manual entry)':'Panasonic terminal \u2013 not selected')),BLUE,14,'start');
+ ['L','P1','P2','W1','W2'].forEach((k,i)=>{s+=txt(tx+nameW+colW*i+colW/2,ty+rowH+25,c[k]>0?f(c[k]):'\u2013',RED,14);s+=txt(tx+nameW+colW*i+colW/2,ty+rowH*2+25,p[k]>0?f(p[k]):'\u2013',BLUE,14)});
  s+=line(34,286,1166,286,'#cbd5e1');
  // competitor pads
- s+=`<rect x="${cg.outerL}" y="${cg.top}" width="${c.W1*sx}" height="${cg.h}" fill="#d10b0b0b" stroke="${RED}" stroke-width="3"/><rect x="${cg.innerR}" y="${cg.top}" width="${c.W2*sx}" height="${cg.h}" fill="#d10b0b0b" stroke="${RED}" stroke-width="3"/>`;
+ if(cReady)s+=`<rect x="${cg.outerL}" y="${cg.top}" width="${c.W1*sx}" height="${cg.h}" fill="#d10b0b0b" stroke="${RED}" stroke-width="3"/><rect x="${cg.innerR}" y="${cg.top}" width="${c.W2*sx}" height="${cg.h}" fill="#d10b0b0b" stroke="${RED}" stroke-width="3"/>`;
  // Panasonic pads
  if(pReady)s+=`<rect x="${pg.outerL}" y="${pg.top}" width="${p.W1*sx}" height="${pg.h}" fill="#0033a014" stroke="${BLUE}" stroke-width="3"/><rect x="${pg.innerR}" y="${pg.top}" width="${p.W2*sx}" height="${pg.h}" fill="#0033a014" stroke="${BLUE}" stroke-width="3"/>`;
  // P2 arrows
- let yC=316,yP=361;s+=line(cg.outerL,cg.top,cg.outerL,yC,RED,'7 5')+line(cg.outerR,cg.top,cg.outerR,yC,RED,'7 5')+arrow(cg.outerL,yC,cg.outerR,yC,RED,`P2 = ${f(c.P2)}`,-12);
+ let yC=316,yP=361;if(cReady)s+=line(cg.outerL,cg.top,cg.outerL,yC,RED,'7 5')+line(cg.outerR,cg.top,cg.outerR,yC,RED,'7 5')+arrow(cg.outerL,yC,cg.outerR,yC,RED,`P2 = ${f(c.P2)}`,-12);
  if(pReady)s+=line(pg.outerL,pg.top,pg.outerL,yP,BLUE,'7 5')+line(pg.outerR,pg.top,pg.outerR,yP,BLUE,'7 5')+arrow(pg.outerL,yP,pg.outerR,yP,BLUE,`P2 = ${f(p.P2)}`,-12);
  // vertical L
- s+=line(cg.outerL,cg.top,cg.outerL-80,cg.top,RED,'7 5')+line(cg.outerL,cg.bottom,cg.outerL-80,cg.bottom,RED,'7 5')+varrow(cg.outerL-65,cg.top,cg.bottom,RED,`L = ${f(c.L)}`,-1);
+ if(cReady&&c.L>0)s+=line(cg.outerL,cg.top,cg.outerL-80,cg.top,RED,'7 5')+line(cg.outerL,cg.bottom,cg.outerL-80,cg.bottom,RED,'7 5')+varrow(cg.outerL-65,cg.top,cg.bottom,RED,`L = ${f(c.L)}`,-1);
  if(pReady&&p.L>0)s+=line(pg.outerR,pg.top,pg.outerR+75,pg.top,BLUE,'7 5')+line(pg.outerR,pg.bottom,pg.outerR+75,pg.bottom,BLUE,'7 5')+varrow(pg.outerR+60,pg.top,pg.bottom,BLUE,`L = ${f(p.L)}`,1);
  // bottom dimensions
- let yc=850,yp=925; [cg.outerL,cg.innerL,cg.innerR,cg.outerR].forEach(x=>s+=line(x,cg.bottom,x,yc+16,RED,'7 5'));s+=arrow(cg.outerL,yc,cg.innerL,yc,RED,`W1 = ${f(c.W1)}`,-10)+arrow(cg.innerL,yc,cg.innerR,yc,RED,`P1 = ${f(c.P1)}`,-10)+arrow(cg.innerR,yc,cg.outerR,yc,RED,`W2 = ${f(c.W2)}`,-10);
+ let yc=850,yp=925; if(cReady){[cg.outerL,cg.innerL,cg.innerR,cg.outerR].forEach(x=>s+=line(x,cg.bottom,x,yc+16,RED,'7 5'));s+=arrow(cg.outerL,yc,cg.innerL,yc,RED,`W1 = ${f(c.W1)}`,-10)+arrow(cg.innerL,yc,cg.innerR,yc,RED,`P1 = ${f(c.P1)}`,-10)+arrow(cg.innerR,yc,cg.outerR,yc,RED,`W2 = ${f(c.W2)}`,-10);}
  if(pReady){[pg.outerL,pg.innerL,pg.innerR,pg.outerR].forEach(x=>s+=line(x,pg.bottom,x,yp+14,BLUE,'7 5'));s+=arrow(pg.outerL,yp,pg.innerL,yp,BLUE,`W1 = ${f(p.W1)}`,-10)+arrow(pg.innerL,yp,pg.innerR,yp,BLUE,`P1 = ${f(p.P1)}`,-10)+arrow(pg.innerR,yp,pg.outerR,yp,BLUE,`W2 = ${f(p.W2)}`,-10);}
  let comment=v('comment');s+=txt(36,835,'Comment:',INK,17,'start'); let words=comment.split(' '),lines=[],cur='';words.forEach(w=>{if((cur+' '+w).length>39){lines.push(cur);cur=w}else cur+=(cur?' ':'')+w});if(cur)lines.push(cur);lines.slice(0,4).forEach((q,i)=>s+=txt(36,860+i*21,q,INK,15,'start',400));
  document.getElementById('drawing').innerHTML=s;
@@ -150,55 +155,118 @@ const byId=id=>document.getElementById(id);
 const fmt2=x=>(x===null||x===undefined||x===''||isNaN(x))?'':Number(x).toFixed(2);
 const readNum=id=>{const t=byId(id).value.trim();return t===''?null:parseFloat(t);};
 
-/* ---------------- dimension solver ----------------
-   Three groups: W (W1+W2), P1 and P2. Once two of them are known the third is
-   calculated, so W1 + P1 + W2 = P2 always holds. Editing the calculated field
-   turns it back into an input and another field becomes the calculated one. */
-const GROUPS={W:['pW1','pW2'],P1:['pP1'],P2:['pP2']};
+/* ---------------- dimension solvers ----------------
+   Each side (competitor and Panasonic) has three groups: W (W1+W2), P1 and P2.
+   Once two of them are known the third is calculated, so W1 + P1 + W2 = P2
+   always holds. Editing the calculated field hands the calculation over. */
 const FORMULA={P1:'P1 = P2 \u2212 W1 \u2212 W2',P2:'P2 = W1 + P1 + W2',W:'W1 = W2 = (P2 \u2212 P1) / 2'};
 const ORDER=['W','P1','P2'];
-let solvedGroup=null,touchSeq=0,touch={W:0,P1:0,P2:0};
 
-function groupReady(g){
- if(g==='W')return readNum('pW1')!==null&&readNum('pW2')!==null;
- return readNum(g==='P1'?'pP1':'pP2')!==null;
+function createSolver(ids,tags,hintId,idleText,theme){
+ const st={solved:null,seq:0,touch:{W:0,P1:0,P2:0}};
+ const read=id=>{const t=byId(id).value.trim();return t===''?null:parseFloat(t);};
+ const setV=(id,value)=>{byId(id).value=fmt2(value);};
+ const ready=g=>g==='W'?(read(ids.W1)!==null&&read(ids.W2)!==null):read(ids[g])!==null;
+ const members=g=>g==='W'?[ids.W1,ids.W2]:[ids[g]];
+ const valueOf=g=>g==='W'?read(ids.W1):read(ids[g]);
+ const editingGroup=()=>ORDER.reduce((a,b)=>((st.touch[a]||0)>=(st.touch[b]||0)?a:b));
+ function choose(){
+  if(ORDER.filter(ready).length<2)return null;
+  // Never solve the group being typed in: an intermediate value such as "6."
+  // reads as empty and would otherwise be overwritten mid-keystroke.
+  const editing=editingGroup();
+  const missing=ORDER.filter(g=>!ready(g));
+  if(missing.length){
+   const solvable=missing.filter(g=>g!==editing);
+   return solvable.length?solvable[0]:null;
+  }
+  if(st.solved&&ready(st.solved))return st.solved;
+  return ORDER.filter(g=>g!==editing).reduce((a,b)=>((st.touch[a]||0)<=(st.touch[b]||0)?a:b));
+ }
+ function solve(g){
+  const P1=read(ids.P1),P2=read(ids.P2),W1=read(ids.W1),W2=read(ids.W2);
+  if(g==='P1'&&P2!==null&&W1!==null&&W2!==null){setV(ids.P1,P2-W1-W2);return true;}
+  if(g==='P2'&&P1!==null&&W1!==null&&W2!==null){setV(ids.P2,W1+P1+W2);return true;}
+  if(g==='W'&&P1!==null&&P2!==null&&P2>P1){const w=fmt2((P2-P1)/2);setV(ids.W1,w);setV(ids.W2,w);return true;}
+  return false;
+ }
+ function paint(){
+  st.solved=choose();
+  ORDER.forEach(g=>{
+   const on=g===st.solved;
+   members(g).forEach(id=>{
+    const field=byId(id);
+    field.classList.toggle('calc',on);
+    if(theme)field.classList.toggle(theme,on);
+    const tag=byId(tags[id]);if(tag)tag.classList.toggle('on',on);
+   });
+  });
+  const hint=byId(hintId),ok=st.solved?solve(st.solved):false;
+  hint.hidden=false;hint.classList.remove('alert');
+  if(ok)hint.textContent='Solving for '+st.solved+' \u2014 '+FORMULA[st.solved];
+  else if(st.solved){hint.textContent=whyNot(st.solved);hint.classList.add('alert');}
+  else hint.textContent=idleText;
+  return ok;
+ }
+ function whyNot(g){
+  const P1=read(ids.P1),P2=read(ids.P2),W1=read(ids.W1),W2=read(ids.W2);
+  const missing=[];
+  if(g==='W'){
+   if(P1===null)missing.push('P1');
+   if(P2===null)missing.push('P2');
+   if(missing.length)return 'Enter '+missing.join(' and ')+' to calculate W1 = W2 = (P2 \u2212 P1) / 2.';
+   if(P2<=P1)return 'P2 ('+fmt2(P2)+') must be larger than P1 ('+fmt2(P1)+') to calculate W1 = W2 = (P2 \u2212 P1) / 2.';
+  }else if(g==='P1'){
+   if(P2===null)missing.push('P2');
+   if(W1===null)missing.push('W1');
+   if(W2===null)missing.push('W2');
+   if(missing.length)return 'Enter '+missing.join(' and ')+' to calculate P1 = P2 \u2212 W1 \u2212 W2.';
+   if(P2-W1-W2<0)return 'W1 + W2 ('+fmt2(W1+W2)+') is larger than P2 ('+fmt2(P2)+'), so P1 would be negative.';
+  }else{
+   if(P1===null)missing.push('P1');
+   if(W1===null)missing.push('W1');
+   if(W2===null)missing.push('W2');
+   if(missing.length)return 'Enter '+missing.join(' and ')+' to calculate P2 = W1 + P1 + W2.';
+  }
+  return 'Enter the other two values.';
+ }
+ function touch(g){st.touch[g]=++st.seq;if(g===st.solved)st.solved=null;}
+ function reset(){st.solved=null;st.seq=0;st.touch={W:0,P1:0,P2:0};}
+ function markFilled(){st.touch={W:++st.seq,P1:0,P2:++st.seq};st.solved=null;}
+ function resolve(){
+  if(ORDER.filter(ready).length<2)return {ok:false,msg:'Enter at least two of W1 + W2, P1 or P2.'};
+  const missing=ORDER.filter(g=>!ready(g));
+  if(!missing.length){
+   const P1=read(ids.P1),P2=read(ids.P2),W1=read(ids.W1),W2=read(ids.W2);
+   if(Math.abs(W1+P1+W2-P2)<=0.03)return {ok:true,msg:'Consistent \u2014 W1 + P1 + W2 = P2 = '+fmt2(P2)+' mm.'};
+   const g=choose(),ok=g?solve(g):false;
+   return {ok:ok,msg:ok?('Inconsistent input \u2014 recalculated '+g+' = '+fmt2(valueOf(g))+' from the other two.'):'Cannot reconcile these values.'};
+  }
+  const g=missing[0],ok=solve(g);
+  return {ok:ok,msg:ok?('Solved '+g+' = '+fmt2(valueOf(g))+' from the other two.'):('Cannot solve '+g+' from the current values.')};
+ }
+ ['P1','P2','W1','W2'].forEach(key=>byId(ids[key]).addEventListener('input',()=>{
+  touch(key==='P1'?'P1':(key==='P2'?'P2':'W'));
+  paint();scheduleDraw();
+ }));
+ return {paint,touch,reset,markFilled,resolve,st};
 }
-function chooseSolved(){
- const ready=ORDER.filter(groupReady);
- if(ready.length<2)return null;
- const missing=ORDER.filter(g=>!groupReady(g));
- if(missing.length)return missing[0];
- if(solvedGroup&&groupReady(solvedGroup))return solvedGroup;
- return ORDER.reduce((a,b)=>(touch[a]||0)<=(touch[b]||0)?a:b);
-}
-function solveGroup(g){
- const P1=readNum('pP1'),P2=readNum('pP2'),W1=readNum('pW1'),W2=readNum('pW2');
- if(g==='P1'&&P2!==null&&W1!==null&&W2!==null){setVal('pP1',P2-W1-W2);return true;}
- if(g==='P2'&&P1!==null&&W1!==null&&W2!==null){setVal('pP2',W1+P1+W2);return true;}
- if(g==='W'&&P1!==null&&P2!==null&&P2>P1){const w=fmt2((P2-P1)/2);setVal('pW1',w);setVal('pW2',w);return true;}
- return false;
-}
-function applySolver(){
- solvedGroup=chooseSolved();
- ORDER.forEach(g=>{
-  const on=g===solvedGroup;
-  GROUPS[g].forEach(id=>{byId(id).classList.toggle('calc',on);const tag=byId('tag'+id.slice(1));if(tag)tag.classList.toggle('on',on);});
- });
- const hint=byId('solveHint');
- const ok=solvedGroup?solveGroup(solvedGroup):false;
- hint.hidden=false;hint.classList.remove('alert');
- if(ok)hint.textContent='Solving for '+solvedGroup+' \u2014 '+FORMULA[solvedGroup];
- else if(solvedGroup){hint.textContent='Solving for '+solvedGroup+' \u2014 enter the other two values.';hint.classList.add('alert');}
- else hint.textContent='Enter any two of W1 + W2, P1 or P2 \u2014 the third is calculated.';
-}
-function refresh(){applySolver();draw();}
 
-['pW1','pW2','pP1','pP2'].forEach(id=>byId(id).addEventListener('input',()=>{
- const g=id==='pP1'?'P1':(id==='pP2'?'P2':'W');
- touch[g]=++touchSeq;
- if(g===solvedGroup)solvedGroup=null;
- applySolver();draw();
-}));
+const panSolver=createSolver({P1:'pP1',P2:'pP2',W1:'pW1',W2:'pW2'},
+ {pP1:'tagP1',pP2:'tagP2',pW1:'tagW1',pW2:'tagW2'},'solveHint',
+ 'Enter any two of W1 + W2, P1 or P2 \u2014 the third is calculated.','');
+const compSolver=createSolver({P1:'cP1',P2:'cP2',W1:'cW1',W2:'cW2'},
+ {cP1:'tagcP1',cP2:'tagcP2',cW1:'tagcW1',cW2:'tagcW2'},'compSolveHint',
+ 'Enter any two of W1 + W2, P1 or P2 \u2014 the third is calculated.','red');
+
+let drawQueued=false;
+function scheduleDraw(){
+ if(drawQueued)return;
+ drawQueued=true;
+ const run=()=>{drawQueued=false;draw();};
+ if(window.requestAnimationFrame)requestAnimationFrame(run);else setTimeout(run,0);
+}
+function refresh(){panSolver.paint();compSolver.paint();scheduleDraw();}
 
 function resolveQuery(query){
  const q=(query||'').trim().toUpperCase();
@@ -219,7 +287,7 @@ function applyResolved(res){
  const d=res.dims||{},p2=(d.p2!==null&&d.p2!==undefined)?d.p2:(res.part?res.part.body_l:null);
  setVal('pL',d.l);setVal('pP2',p2);setVal('pW1',d.w1);setVal('pW2',d.w2);
  setVal('pP1','');
- touch={W:++touchSeq,P1:0,P2:++touchSeq};solvedGroup=null;
+ panSolver.markFilled();
  hint.hidden=true;status.hidden=false;
  const bits=[];
  if(res.suffix)bits.push('Suffix '+res.suffix);
@@ -287,10 +355,26 @@ function applyResolved(res){
  });
  byId('clearPan').addEventListener('click',()=>{
   input.value='';['pL','pP1','pP2','pW1','pW2'].forEach(id=>byId(id).value='');
-  solvedGroup=null;touchSeq=0;touch={W:0,P1:0,P2:0};
+  panSolver.reset();
   byId('pnStatus').hidden=true;byId('pnHint').hidden=false;byId('pnHint').classList.remove('alert');byId('pnHint').textContent=DEFAULT_HINT;refresh();
  });
 })();
+
+/* ---------------- competitor controls ---------------- */
+byId('compResolve').addEventListener('click',()=>{
+ const result=compSolver.resolve();
+ compSolver.paint();draw();
+ const status=byId('compStatus');
+ status.hidden=false;status.className='status'+(result.ok?'':' warn');
+ status.textContent=result.msg;
+});
+byId('compClear').addEventListener('click',()=>{
+ ['cL','cP1','cP2','cW1','cW2'].forEach(id=>byId(id).value='');
+ compSolver.reset();
+ byId('compStatus').hidden=true;byId('compStatus').textContent='';
+ compSolver.paint();draw();
+});
+compSolver.markFilled();
 
 refresh();
 </script>
