@@ -9,8 +9,8 @@
   *{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#eef2f7}
   .app{max-width:1500px;margin:auto;padding:20px}.header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}
   h1{font-size:24px;margin:0}.subtitle{color:var(--muted);font-size:14px;margin-top:5px}
-  .layout{display:grid;grid-template-columns:430px minmax(0,1fr);gap:18px}.panel,.preview{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 5px 20px #0f172a10}
-  .panel{padding:18px;max-height:calc(100vh - 105px);overflow:auto}.preview{padding:12px;display:flex;flex-direction:column;min-height:700px}
+  .layout{display:grid;grid-template-columns:430px minmax(0,1fr);gap:18px;align-items:stretch;height:calc(100vh - 105px);min-height:560px}.panel,.preview{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 5px 20px #0f172a10}
+  .panel{padding:18px;overflow:auto;min-height:0}.preview{padding:12px;display:flex;flex-direction:column;min-height:0}
   .section{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}.section:first-child{border-top:0;padding-top:0;margin-top:0}
   h2{font-size:16px;margin:0 0 12px}.blue{color:var(--blue)}.red{color:var(--red)}
   label{font-size:12px;font-weight:700;color:#334155;display:block;margin-bottom:5px}.field{margin-bottom:10px}
@@ -40,10 +40,10 @@
   input.calc{background:#eef4ff;color:#1e3a8a;border-style:dashed;border-color:#93b4f5}
   input.calc.red{background:#fef2f2;color:#991b1b;border-color:#fca5a5}
   input[readonly]{background:#eef4ff;color:#1e3a8a;border-style:dashed;cursor:not-allowed}
-  #stage{width:100%;flex:1;display:flex;align-items:center;justify-content:center;overflow:auto;background:#fff}
+  #stage{width:100%;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:auto;background:#fff}
   #drawing{width:100%;height:auto;min-width:760px;display:block}.toolbar{display:flex;justify-content:space-between;align-items:center;padding:3px 5px 10px;font-size:13px;color:var(--muted)}.warning-card{display:none;margin:0 5px 6px;padding:6px 10px;border:1px solid #dc2626;border-left:4px solid #b91c1c;border-radius:6px;background:#fef2f2;color:#991b1b;font-size:12px;font-weight:700;line-height:1.2;box-shadow:0 1px 4px #991b1b14;white-space:nowrap;overflow-x:auto}.warning-card.show{display:block}.warning-card-title{display:inline;color:#7f1d1d;font-size:12px}
-  @media(max-width:900px){.layout{grid-template-columns:1fr}.panel{max-height:none}.preview{min-height:550px}}
-  @media print{body{background:#fff}.header,.panel,.toolbar{display:none}.app{max-width:none;padding:0}.layout{display:block}.preview{border:0;box-shadow:none;padding:0}#drawing{min-width:0}}
+  @media(max-width:900px){.layout{grid-template-columns:1fr;height:auto;min-height:0}.panel,.preview{height:calc(100vh - 105px);min-height:480px}}
+  @media print{body{background:#fff}.header,.panel,.toolbar{display:none}.app{max-width:none;padding:0}.layout{display:block;height:auto;min-height:0}.preview{border:0;box-shadow:none;padding:0;height:auto;min-height:0}#drawing{min-width:0}}
 </style>
 </head>
 <body>
@@ -89,7 +89,7 @@
         <div class="buttons" style="margin-top:10px"><button class="btn sm" type="button" id="autoResolve">Auto resolve</button><button class="btn secondary sm" type="button" id="clearPan">Clear</button></div>
       </div>
       <div class="section"><div class="buttons"><button class="btn" onclick="downloadPNG()">Export PNG</button><button class="btn" onclick="downloadSVG()">Export SVG</button><button class="btn secondary" onclick="window.print()">Print / PDF</button></div>
-      <div class="note"><b>Part numbers:</b> pick a Panasonic part number (or type the three-letter suffix such as KFN) and L, P2, W1 and W2 are filled from the datasheet; the rest is solved. <b>Auto resolve</b> re-applies the datasheet values at any time. <b>Solver:</b> enter any two of <b>W1&nbsp;+&nbsp;W2</b>, <b>P1</b> or <b>P2</b> and the third is calculated &mdash; the field being solved is tagged <i>solved</i>. Typing in the solved field hands the calculation over to another field, so P1 + W1 + W2 = P2 always holds. <b>Geometry:</b> P2 is the total outside span, P1 is the inner gap, W1 and W2 are the left and right widths. Each pair is horizontally centred on the same origin.</div></div>
+      <div class="note"><b>Part numbers:</b> pick a Panasonic part number (or type the three-letter suffix such as KFN) and L, P2, W1 and W2 are filled from the datasheet; the rest is solved. <b>Auto resolve</b> re-applies the datasheet values at any time. <b>Solver:</b> enter any two of <b>W1&nbsp;+&nbsp;W2</b>, <b>P1</b> or <b>P2</b> and the third is calculated &mdash; the field being solved is tagged <i>solved</i> (a resolved part number stays plain). Typing in the solved field hands the calculation over to another field, so P1 + W1 + W2 = P2 always holds. <b>Geometry:</b> P2 is the total outside span, P1 is the inner gap, W1 and W2 are the left and right widths. Each pair is horizontally centred on the same origin.</div></div>
     </aside>
     <main class="preview"><div class="toolbar"><span>Live preview</span></div><div id="warning" class="warning-card" role="alert" aria-live="polite"></div><div id="stage"><svg id="drawing" viewBox="0 0 1200 980" xmlns="http://www.w3.org/2000/svg"></svg></div></main>
   </div>
@@ -163,7 +163,7 @@ const FORMULA={P1:'P1 = P2 \u2212 W1 \u2212 W2',P2:'P2 = W1 + P1 + W2',W:'W1 = W
 const ORDER=['W','P1','P2'];
 
 function createSolver(ids,tags,hintId,idleText,theme){
- const st={solved:null,seq:0,touch:{W:0,P1:0,P2:0}};
+ const st={solved:null,seq:0,touch:{W:0,P1:0,P2:0},external:false};
  const read=id=>{const t=byId(id).value.trim();return t===''?null:parseFloat(t);};
  const setV=(id,value)=>{byId(id).value=fmt2(value);};
  const ready=g=>g==='W'?(read(ids.W1)!==null&&read(ids.W2)!==null):read(ids[g])!==null;
@@ -192,8 +192,9 @@ function createSolver(ids,tags,hintId,idleText,theme){
  }
  function paint(){
   st.solved=choose();
+  const chrome=!st.external;
   ORDER.forEach(g=>{
-   const on=g===st.solved;
+   const on=g===st.solved&&chrome;
    members(g).forEach(id=>{
     const field=byId(id);
     field.classList.toggle('calc',on);
@@ -230,9 +231,9 @@ function createSolver(ids,tags,hintId,idleText,theme){
   }
   return 'Enter the other two values.';
  }
- function touch(g){st.touch[g]=++st.seq;if(g===st.solved)st.solved=null;}
- function reset(){st.solved=null;st.seq=0;st.touch={W:0,P1:0,P2:0};}
- function markFilled(){st.touch={W:++st.seq,P1:0,P2:++st.seq};st.solved=null;}
+ function touch(g){st.touch[g]=++st.seq;st.external=false;if(g===st.solved)st.solved=null;}
+ function reset(){st.solved=null;st.seq=0;st.touch={W:0,P1:0,P2:0};st.external=false;}
+ function markFilled(external){st.touch={W:++st.seq,P1:0,P2:++st.seq};st.solved=null;st.external=!!external;}
  function resolve(){
   if(ORDER.filter(ready).length<2)return {ok:false,msg:'Enter at least two of W1 + W2, P1 or P2.'};
   const missing=ORDER.filter(g=>!ready(g));
@@ -287,7 +288,7 @@ function applyResolved(res){
  const d=res.dims||{},p2=(d.p2!==null&&d.p2!==undefined)?d.p2:(res.part?res.part.body_l:null);
  setVal('pL',d.l);setVal('pP2',p2);setVal('pW1',d.w1);setVal('pW2',d.w2);
  setVal('pP1','');
- panSolver.markFilled();
+ panSolver.markFilled(true);
  hint.hidden=true;status.hidden=false;
  const bits=[];
  if(res.suffix)bits.push('Suffix '+res.suffix);
@@ -374,7 +375,7 @@ byId('compClear').addEventListener('click',()=>{
  byId('compStatus').hidden=true;byId('compStatus').textContent='';
  compSolver.paint();draw();
 });
-compSolver.markFilled();
+compSolver.markFilled(false);
 
 refresh();
 </script>

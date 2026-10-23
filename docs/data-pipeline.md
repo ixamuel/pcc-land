@@ -208,6 +208,9 @@ The **Panasonic** side adds the catalogue lookup on top:
 
   Typing into the solved field hands the calculation to another field (the two
   most recently edited groups are kept), so the relationship can never drift.
+  After a part number is resolved the row stays plain — no `solved` badge or tint,
+  because the values came from the datasheet; the badge appears again as soon as
+  a dimension is typed by hand.
   The field currently being typed in is never written to, so an intermediate
   state such as `6.` cannot be overwritten mid-keystroke.
   If a combination cannot be solved the hint explains why, e.g.
