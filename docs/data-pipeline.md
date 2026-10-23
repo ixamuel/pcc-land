@@ -175,6 +175,23 @@ For `CVM` and `DTV`, `P2` still resolves from the workbook body length (7.90 and
 
 ## 6. UI behaviour in `index.html`
 
+### Dimension wording
+
+Every editable dimension shows its code plus a one-word subtitle, and the same
+word is reused in the tooltip, the solver prompt and the help note:
+
+| Code | Subtitle | Tooltip |
+|---|---|---|
+| `L` | height | vertical extent of the pad / terminal |
+| `P1` | gap | inner gap between the two pads / terminals |
+| `P2` | total | total outside span across both pads / terminals |
+| `W1` | left | left pad / terminal width |
+| `W2` | right | right pad / terminal width |
+
+Rules: one lowercase word, no unit (mm is stated once, above the row), no letter
+code repeated, and the noun follows the row — *pad* for the competitor, *terminal*
+for Panasonic.
+
 The **competitor** side carries the same three-group solver and the same
 `Auto resolve` / `Clear` buttons:
 

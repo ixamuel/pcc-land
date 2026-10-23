@@ -250,6 +250,7 @@ The final HTML generator provides:
 - Compact one-line red mismatch card
 - Searchable Panasonic part-number list with datasheet auto-resolve
 - Automatic solver that calculates whichever of `P1`, `P2` or `W1 = W2` is missing
+- One-word subtitle under every dimension: *height · gap · total · left · right*
 - Provenance chip / amber fallback note for every resolved part number
 - PNG export
 - SVG export

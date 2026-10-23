@@ -17,6 +17,7 @@
   input{width:100%;border:1px solid #cbd5e1;border-radius:7px;padding:9px 10px;font-size:14px;background:#fff}
   input:focus{outline:2px solid #93c5fd;border-color:#2563eb}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .dim-grid{display:grid;grid-template-columns:repeat(5,minmax(52px,1fr));gap:7px;align-items:end}.dim-grid .field{margin-bottom:4px}.dim-grid label{text-align:center;font-size:13px}.dim-grid input{text-align:center;padding:9px 4px;font-variant-numeric:tabular-nums}.dimension-caption{font-size:11px;color:var(--muted);margin:-3px 0 8px}
+  .dim-grid label .sub{display:block;margin-top:3px;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;line-height:1.1}
   .buttons{display:flex;gap:9px;flex-wrap:wrap}.btn{border:0;border-radius:8px;padding:10px 14px;font-weight:700;cursor:pointer;background:#0f172a;color:#fff}.btn.secondary{background:#e2e8f0;color:#0f172a}.btn:hover{filter:brightness(.95)}.btn.sm{padding:7px 11px;font-size:12px}
   .btn.attention{background:#1d4ed8;box-shadow:0 0 0 3px #dbeafe}
   .note{font-size:12px;line-height:1.45;color:var(--muted);background:var(--panel);padding:10px;border-radius:8px;margin-top:12px}
@@ -40,10 +41,10 @@
   input.calc{background:#eef4ff;color:#1e3a8a;border-style:dashed;border-color:#93b4f5}
   input.calc.red{background:#fef2f2;color:#991b1b;border-color:#fca5a5}
   input[readonly]{background:#eef4ff;color:#1e3a8a;border-style:dashed;cursor:not-allowed}
-  #stage{width:100%;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:auto;background:#fff}
-  #drawing{width:100%;height:auto;min-width:760px;display:block}.toolbar{display:flex;justify-content:space-between;align-items:center;padding:3px 5px 10px;font-size:13px;color:var(--muted)}.warning-card{display:none;margin:0 5px 6px;padding:6px 10px;border:1px solid #dc2626;border-left:4px solid #b91c1c;border-radius:6px;background:#fef2f2;color:#991b1b;font-size:12px;font-weight:700;line-height:1.2;box-shadow:0 1px 4px #991b1b14;white-space:nowrap;overflow-x:auto}.warning-card.show{display:block}.warning-card-title{display:inline;color:#7f1d1d;font-size:12px}
+  #stage{width:100%;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff}
+  #drawing{display:block;width:auto;height:auto;max-width:100%;max-height:100%}.toolbar{display:flex;justify-content:space-between;align-items:center;padding:3px 5px 10px;font-size:13px;color:var(--muted)}.warning-card{display:none;margin:0 5px 6px;padding:6px 10px;border:1px solid #dc2626;border-left:4px solid #b91c1c;border-radius:6px;background:#fef2f2;color:#991b1b;font-size:12px;font-weight:700;line-height:1.2;box-shadow:0 1px 4px #991b1b14;white-space:nowrap;overflow-x:auto}.warning-card.show{display:block}.warning-card-title{display:inline;color:#7f1d1d;font-size:12px}
   @media(max-width:900px){.layout{grid-template-columns:1fr;height:auto;min-height:0}.panel,.preview{height:calc(100vh - 105px);min-height:480px}}
-  @media print{body{background:#fff}.header,.panel,.toolbar{display:none}.app{max-width:none;padding:0}.layout{display:block;height:auto;min-height:0}.preview{border:0;box-shadow:none;padding:0;height:auto;min-height:0}#drawing{min-width:0}}
+  @media print{body{background:#fff}.header,.panel,.toolbar{display:none}.app{max-width:none;padding:0}.layout{display:block;height:auto;min-height:0}.preview{border:0;box-shadow:none;padding:0;height:auto;min-height:0}#drawing{max-width:100%;max-height:none;width:100%;height:auto}}
 </style>
 </head>
 <body>
@@ -58,13 +59,13 @@
       <div class="section"><h2 class="red">Competitor / Land pattern</h2>
         <div class="grid2"><div class="field"><label>Name</label><input id="compName" value="Bourns"></div><div class="field"><label>Part no. (optional)</label><input id="compPart" placeholder="e.g. SRP... "></div></div>
         <div class="dimension-caption">Dimensions (mm)</div><div class="dim-grid">
-          <div class="field"><label>L</label><input id="cL" type="number" step="0.01" min="0.01" value="3.40"></div>
-          <div class="field"><label>P1<span class="calc-tag red" id="tagcP1">solved</span></label><input id="cP1" type="number" step="0.01" min="0" value="2.70"></div>
-          <div class="field"><label>P2<span class="calc-tag red" id="tagcP2">solved</span></label><input id="cP2" type="number" step="0.01" min="0.01" value="8.40"></div>
-          <div class="field"><label>W1<span class="calc-tag red" id="tagcW1">solved</span></label><input id="cW1" type="number" step="0.01" min="0.01" value="2.85"></div>
-          <div class="field"><label>W2<span class="calc-tag red" id="tagcW2">solved</span></label><input id="cW2" type="number" step="0.01" min="0.01" value="2.85"></div>
+          <div class="field"><label>L<span class="sub">height</span></label><input id="cL" type="number" step="0.01" min="0.01" value="3.40" title="L — pad height (vertical extent of the pad)"></div>
+          <div class="field"><label>P1<span class="calc-tag red" id="tagcP1">solved</span><span class="sub">gap</span></label><input id="cP1" type="number" step="0.01" min="0" value="2.70" title="P1 — inner gap between the two pads"></div>
+          <div class="field"><label>P2<span class="calc-tag red" id="tagcP2">solved</span><span class="sub">total</span></label><input id="cP2" type="number" step="0.01" min="0.01" value="8.40" title="P2 — total outside span across both pads"></div>
+          <div class="field"><label>W1<span class="calc-tag red" id="tagcW1">solved</span><span class="sub">left</span></label><input id="cW1" type="number" step="0.01" min="0.01" value="2.85" title="W1 — left pad width"></div>
+          <div class="field"><label>W2<span class="calc-tag red" id="tagcW2">solved</span><span class="sub">right</span></label><input id="cW2" type="number" step="0.01" min="0.01" value="2.85" title="W2 — right pad width"></div>
         </div>
-        <div id="compSolveHint" class="hint">Enter any two of W1 + W2, P1 or P2 &mdash; the third is calculated.</div>
+        <div id="compSolveHint" class="hint">Enter any two of W1 + W2, P1 (gap) or P2 (total) &mdash; the third is calculated.</div>
         <div id="compStatus" class="status" role="status" aria-live="polite" hidden></div>
         <div class="buttons" style="margin-top:10px"><button class="btn sm" type="button" id="compResolve">Auto resolve</button><button class="btn secondary sm" type="button" id="compClear">Clear</button></div>
       </div>
@@ -79,13 +80,13 @@
           <div id="pnStatus" class="status" role="status" aria-live="polite" hidden></div>
         </div>
         <div class="dimension-caption">Dimensions (mm)</div><div class="dim-grid">
-          <div class="field"><label>L</label><input id="pL" type="number" step="0.01" min="0.01" placeholder="&ndash;"></div>
-          <div class="field"><label>P1<span class="calc-tag" id="tagP1">solved</span></label><input id="pP1" type="number" step="0.01" min="0" placeholder="&ndash;"></div>
-          <div class="field"><label>P2<span class="calc-tag" id="tagP2">solved</span></label><input id="pP2" type="number" step="0.01" min="0.01" placeholder="&ndash;"></div>
-          <div class="field"><label>W1<span class="calc-tag" id="tagW1">solved</span></label><input id="pW1" type="number" step="0.01" min="0.01" placeholder="&ndash;"></div>
-          <div class="field"><label>W2<span class="calc-tag" id="tagW2">solved</span></label><input id="pW2" type="number" step="0.01" min="0.01" placeholder="&ndash;"></div>
+          <div class="field"><label>L<span class="sub">height</span></label><input id="pL" type="number" step="0.01" min="0.01" placeholder="&ndash;" title="L — terminal height (vertical extent of the terminal)"></div>
+          <div class="field"><label>P1<span class="calc-tag" id="tagP1">solved</span><span class="sub">gap</span></label><input id="pP1" type="number" step="0.01" min="0" placeholder="&ndash;" title="P1 — inner gap between the two terminals"></div>
+          <div class="field"><label>P2<span class="calc-tag" id="tagP2">solved</span><span class="sub">total</span></label><input id="pP2" type="number" step="0.01" min="0.01" placeholder="&ndash;" title="P2 — total outside span across both terminals"></div>
+          <div class="field"><label>W1<span class="calc-tag" id="tagW1">solved</span><span class="sub">left</span></label><input id="pW1" type="number" step="0.01" min="0.01" placeholder="&ndash;" title="W1 — left terminal width"></div>
+          <div class="field"><label>W2<span class="calc-tag" id="tagW2">solved</span><span class="sub">right</span></label><input id="pW2" type="number" step="0.01" min="0.01" placeholder="&ndash;" title="W2 — right terminal width"></div>
         </div>
-        <div id="solveHint" class="hint">Enter any two of W1 + W2, P1 or P2 &mdash; the third is calculated.</div>
+        <div id="solveHint" class="hint">Enter any two of W1 + W2, P1 (gap) or P2 (total) &mdash; the third is calculated.</div>
         <div class="buttons" style="margin-top:10px"><button class="btn sm" type="button" id="autoResolve">Auto resolve</button><button class="btn secondary sm" type="button" id="clearPan">Clear</button></div>
       </div>
       <div class="section"><div class="buttons"><button class="btn" onclick="downloadPNG()">Export PNG</button><button class="btn" onclick="downloadSVG()">Export SVG</button><button class="btn secondary" onclick="window.print()">Print / PDF</button></div>
@@ -255,10 +256,10 @@ function createSolver(ids,tags,hintId,idleText,theme){
 
 const panSolver=createSolver({P1:'pP1',P2:'pP2',W1:'pW1',W2:'pW2'},
  {pP1:'tagP1',pP2:'tagP2',pW1:'tagW1',pW2:'tagW2'},'solveHint',
- 'Enter any two of W1 + W2, P1 or P2 \u2014 the third is calculated.','');
+ 'Enter any two of W1 + W2, P1 (gap) or P2 (total) \u2014 the third is calculated.','');
 const compSolver=createSolver({P1:'cP1',P2:'cP2',W1:'cW1',W2:'cW2'},
  {cP1:'tagcP1',cP2:'tagcP2',cW1:'tagcW1',cW2:'tagcW2'},'compSolveHint',
- 'Enter any two of W1 + W2, P1 or P2 \u2014 the third is calculated.','red');
+ 'Enter any two of W1 + W2, P1 (gap) or P2 (total) \u2014 the third is calculated.','red');
 
 let drawQueued=false;
 function scheduleDraw(){
