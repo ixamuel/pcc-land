@@ -1,0 +1,41 @@
+# Panasonic terminal dimensions, one row per 3-letter part-number suffix.
+# Values in mm, read from the "Dimensions in mm (not to scale)" block of the
+# datasheet named in the `source` column.
+#   p2   = outside span across both terminals
+#   w1   = left terminal width
+#   w2   = right terminal width
+#   l    = terminal length (depth of the solder terminal)
+#   p1   = derived, p2 - w1 - w2  (never stored here)
+# status: verified   = read directly from an unambiguous drawing
+#         shared-tile= drawing covers several sizes, geometry shared
+#         review     = extraction ambiguous or from a secondary table
+#         manual     = no drawing available, rely on P2 from the xlsx body length
+suffix,p2,w1,w2,l,h_max,pcb_type,source,status,note
+KVP,5.5,1.0,1.0,2.54,3.0,PCC-M0530M-LP,AGL0000C63-LP.pdf p10,verified,
+KVN,6.4,1.04,1.04,3.18,3.0,PCC-M0630M-LP,AGL0000C63-LP.pdf p10,verified,
+KVK,8.5,1.3,1.3,5.08,4.0,PCC-M0840M-LP,AGL0000C63-LP.pdf p10,verified,
+KVC,10.7,2.08,2.08,3.0,4.0,PCC-M1040M-LP,AGL0000C63-LP.pdf p10,verified,ETQP4M1R0KVC uses the 1R0 drawing (see pn_overrides.csv)
+KFN,6.4,1.6,1.6,2.0,4.8,PCC-M0648M-LE,AGL0000C73-LE.pdf p6,verified,
+KFM,7.4,1.6,1.6,2.0,4.8,PCC-M0748M-LE,AGL0000C73-LE.pdf p6,verified,
+HFP,5.5,1.2,1.2,3.0,3.0,PCC-M0530M-H,AGL0000C67-HF.pdf p4,verified,
+HFN,6.5,1.5,1.5,3.0,3.0,PCC-M0630M-H,AGL0000C67-HF.pdf p4,verified,
+TTM,7.5,2.0,2.0,3.0,5.4,PCC-M0754MS,AGL0000C70-vib.pdf p4,verified,
+YSK,8.5,1.3,1.3,5.08,5.4,PCC-M0854MS,AGL0000C70-vib.pdf p4,verified,
+YTC,10.9,2.0,2.0,4.2,5.4,PCC-M1054MS,AGL0000C70-vib.pdf p4,verified,
+YSC,10.9,1.8,1.8,7.3,5.0,PCC-M1050MS,AGL0000C70-vib.pdf p4,shared-tile,M105xMS share one drawing; H varies 5.0-6.0
+YLC,10.9,1.8,1.8,7.3,5.0,PCC-M1050ML,AGL0000C59-M.pdf p15,verified,
+KLC,10.9,2.0,2.0,4.7,4.0,PCC-M1040ML,AGL0000C59-M.pdf p14,verified,4M-KLC only; ETQP6M150KLC uses the M1060ML drawing (see pn_overrides.csv)
+GAC,10.9,1.8,1.8,7.3,6.0,PCC-M1060ML,AGL0000C59-M.pdf p15,shared-tile,
+YFP,5.5,1.2,1.2,3.0,3.0,PCC-M0530M,AGL0000C59-M.pdf p14,verified,
+YFN,6.5,1.5,1.5,3.0,3.0,PCC-M0630M,AGL0000C59-M.pdf p14,verified,
+YFM,7.5,2.0,2.0,3.0,5.4,PCC-M0754M,AGL0000C59-M.pdf p14,verified,
+YGM,7.5,2.0,2.0,3.0,5.0,PCC-M0750M,AGL0000C59-M.pdf p14,verified,
+YFK,8.5,2.0,2.0,3.0,5.4,PCC-M0854M,AGL0000C59-M.pdf p14,verified,
+GAK,8.5,2.0,2.0,3.0,5.4,PCC-M0854M,AGL0000C59-M.pdf p14,shared-tile,
+YGK,8.5,2.0,2.0,3.0,5.0,PCC-M0850M,AGL0000C59-M.pdf p14,verified,
+YFC,10.7,2.0,2.0,4.2,5.4,PCC-M1054M,AGL0000C59-M.pdf p14,review,verify L against drawing before release
+YGC,10.7,2.0,2.0,4.2,5.0,PCC-M1050M,AGL0000C59-M.pdf p14,review,verify L against drawing before release
+JFA,,,,,PCC-M1280MF,AGL0000C61-large.pdf p6,manual,terminal width varies per part - see pn_overrides.csv
+JFW,,,,,PCC-M15A0MF,AGL0000C61-large.pdf p6,manual,terminal width varies per part - see pn_overrides.csv
+CVM,,,,,PCC-M0750M-LL,,manual,LL series datasheet not in the download set
+DTV,,,,,PCC-D1413H,,manual,THT type; terminal dimensions not in the download set

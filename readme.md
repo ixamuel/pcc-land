@@ -181,6 +181,49 @@ The card:
 - Uses horizontal scrolling on narrow screens rather than wrapping
 - Disappears automatically when the dimensions are valid
 
+### Stage 8: Panasonic part-number auto-resolve
+
+The Panasonic side no longer starts with hard-coded numbers. A searchable
+part-number list (all 150 catalogue parts from `Inductor all data.xlsx`) feeds
+`L`, `P2`, `W1` and `W2` from the datasheet that covers the part's three-letter
+suffix (`ETQP4M3R3KFN` → `KFN` → `AGL0000C73-LE.pdf` page 6).
+
+- Grey advice text is shown before anything is entered.
+- Selecting or typing a part number only stages the number; the dimensions are
+  filled when `Auto resolve` is pressed, so nothing changes under the user's hands.
+- Typing just the suffix (`KFN`) resolves the shared terminal geometry.
+- A provenance chip names the drawing, or an amber note explains that no
+  drawing is on file and asks for the dimensions to be typed.
+
+Data pipeline and maintenance: see `docs/data-pipeline.md`. Datasheets live in
+`datasheet/`, curated values in `data/terminal_dims.csv` (per suffix) and
+`data/pn_overrides.csv` (per part number, used where the terminal depends on the
+inductance itself, e.g. the large-current `JFA`/`JFW` family).
+Build commands:
+
+```bash
+.venv/bin/python tools/extract_pdf_dims.py   # PDF -> candidates + diff report
+.venv/bin/python tools/build_catalog.py      # xlsx + CSV -> catalog.json + index.html
+```
+
+### Stage 9: Dimension solver
+
+There is no mode switch. The three groups `W1 + W2`, `P1` and `P2` are watched,
+and as soon as two of them hold a value the third is calculated and badged
+`solved` above its input, with the formula shown underneath:
+
+| Known | Calculated |
+|---|---|
+| `W1 + W2`, `P2` | `P1 = P2 − W1 − W2` |
+| `W1 + W2`, `P1` | `P2 = W1 + P1 + W2` |
+| `P1`, `P2` | `W1 = W2 = (P2 − P1) / 2` |
+
+Typing into the solved field hands the calculation over to another field, so the
+`solved` badge moves and `W1 + P1 + W2 = P2` can never drift.
+
+The calculated box is read-only, tinted blue, and tagged `CALC`, so the
+`W1 + P1 + W2 = P2` relationship can never drift on the Panasonic side.
+
 ## 6. Final generator features
 
 The final HTML generator provides:
@@ -198,6 +241,9 @@ The final HTML generator provides:
 - No dotted centre line
 - Automatic dimensional consistency validation
 - Compact one-line red mismatch card
+- Searchable Panasonic part-number list with datasheet auto-resolve
+- Automatic solver that calculates whichever of `P1`, `P2` or `W1 = W2` is missing
+- Provenance chip / amber fallback note for every resolved part number
 - PNG export
 - SVG export
 - Print or PDF support
