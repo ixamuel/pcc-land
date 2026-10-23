@@ -235,6 +235,25 @@ The **Panasonic** side adds the catalogue lookup on top:
 - The existing `< 0.03 mm` mismatch card is unchanged; it is skipped while the
   Panasonic row is still incomplete.
 
+### Preview card
+
+- Header bar: live dot + `Live preview`, a zoom group (`−`, `Fit`, `+`, percent)
+  and the export actions `PNG`, `SVG`, `Print` (moved out of the form).
+- Canvas is **1200 × 860**. Exports use the same box: SVG is written at
+  1200 × 860, PNG at 2400 × 1720 (2×).
+- Document header: one title line combining both sides —
+  *Recommended Land Pattern* **vs.** *ETQP4M100KFN Solder Terminal Overlay* —
+  with the unit note on the right. The title is built from the form's `Main title`
+  plus the Panasonic part number (or just *Solder Terminal Overlay* when no part
+  is chosen) and shrinks its font automatically to stay on one line.
+- Comparison table: rounded card, muted uppercase header, colour dots, hairline
+  rows, tabular figures, `–` for values that are not known yet.
+- Dimensions: 1.4 px arrows, 13 px labels, extension lines at 50 % opacity.
+- Empty state: dashed placeholder with
+  *“Enter dimensions, or pick a Panasonic part number”*.
+- Zoom: `Fit` scales the canvas to the card; `−` / `+` step 100 → 125 → 150 →
+  200 → 300 %, the stage scrolls and anchors to the top-left when zoomed in.
+
 ## 7. Adding a new datasheet
 
 1. Drop the PDF in `datasheet/`.

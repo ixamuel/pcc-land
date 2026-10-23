@@ -231,6 +231,23 @@ Both rows carry this solver. Each has its own `Auto resolve` and `Clear`:
 The calculated box is read-only, tinted blue, and tagged `CALC`, so the
 `W1 + P1 + W2 = P2` relationship can never drift on the Panasonic side.
 
+### Stage 10: Live preview revamp
+
+The preview card became self-contained:
+
+- Header bar with a live indicator, zoom controls (`−` / `Fit` / `+`, 100–300 %)
+  and the `PNG`, `SVG` and `Print` actions, which moved out of the form.
+- Canvas tightened to 1200 × 860 (the old sheet had a dead band at the bottom);
+  exports follow the new box (SVG 1200 × 860, PNG 2400 × 1720).
+- Document header as a single title line — *Recommended Land Pattern* **vs.**
+  *ETQP4M100KFN Solder Terminal Overlay* — with the unit note on the right and
+  automatic font shrinking for long titles.
+- Comparison table redrawn as a rounded card with muted uppercase headers,
+  colour dots, hairline rows and tabular figures.
+- Dimension arrows and labels made thinner and smaller, extension lines at 50 %
+  opacity, and a dashed empty state before any values are entered.
+- The comment moved to a muted `COMMENT` block at the foot of the sheet.
+
 ## 6. Final generator features
 
 The final HTML generator provides:

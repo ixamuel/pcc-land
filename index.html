@@ -10,7 +10,7 @@
   .app{max-width:1500px;margin:auto;padding:20px}.header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}
   h1{font-size:24px;margin:0}.subtitle{color:var(--muted);font-size:14px;margin-top:5px}
   .layout{display:grid;grid-template-columns:430px minmax(0,1fr);gap:18px;align-items:stretch;height:calc(100vh - 105px);min-height:560px}.panel,.preview{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 5px 20px #0f172a10}
-  .panel{padding:18px;overflow:auto;min-height:0}.preview{padding:12px;display:flex;flex-direction:column;min-height:0}
+  .panel{padding:18px;overflow:auto;min-height:0}.preview{padding:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
   .section{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}.section:first-child{border-top:0;padding-top:0;margin-top:0}
   h2{font-size:16px;margin:0 0 12px}.blue{color:var(--blue)}.red{color:var(--red)}
   label{font-size:12px;font-weight:700;color:#334155;display:block;margin-bottom:5px}.field{margin-bottom:10px}
@@ -41,10 +41,21 @@
   input.calc{background:#eef4ff;color:#1e3a8a;border-style:dashed;border-color:#93b4f5}
   input.calc.red{background:#fef2f2;color:#991b1b;border-color:#fca5a5}
   input[readonly]{background:#eef4ff;color:#1e3a8a;border-style:dashed;cursor:not-allowed}
-  #stage{width:100%;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff}
-  #drawing{display:block;width:auto;height:auto;max-width:100%;max-height:100%}.toolbar{display:flex;justify-content:space-between;align-items:center;padding:3px 5px 10px;font-size:13px;color:var(--muted)}.warning-card{display:none;margin:0 5px 6px;padding:6px 10px;border:1px solid #dc2626;border-left:4px solid #b91c1c;border-radius:6px;background:#fef2f2;color:#991b1b;font-size:12px;font-weight:700;line-height:1.2;box-shadow:0 1px 4px #991b1b14;white-space:nowrap;overflow-x:auto}.warning-card.show{display:block}.warning-card-title{display:inline;color:#7f1d1d;font-size:12px}
+  #stage{width:100%;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:auto;background:#fff;padding:10px}
+  #drawing{display:block;flex:none}
+  .preview-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 14px;border-bottom:1px solid var(--line);background:linear-gradient(#fdfefe,#f5f8fc)}
+  .ph-title{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:#0f172a;letter-spacing:.05em;text-transform:uppercase}
+  .ph-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18)}
+  .ph-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+  .zoom{display:flex;align-items:center;gap:1px;border:1px solid var(--line);border-radius:8px;padding:2px;background:#fff}
+  .zoom button{border:0;background:transparent;min-width:26px;height:24px;padding:0 7px;border-radius:5px;cursor:pointer;color:#475569;font-size:12px;font-weight:700;font-family:inherit}
+  .zoom button:hover{background:#eef2f7}
+  .zoom .pct{min-width:42px;text-align:center;font-size:11px;color:#64748b;font-variant-numeric:tabular-nums}
+  .btn.ghost{background:#fff;border:1px solid var(--line);color:#0f172a}
+  .btn.ghost:hover{background:#f1f5f9}
+  .warning-card{display:none;margin:8px 14px 0;padding:6px 10px;border:1px solid #dc2626;border-left:4px solid #b91c1c;border-radius:6px;background:#fef2f2;color:#991b1b;font-size:12px;font-weight:700;line-height:1.2;box-shadow:0 1px 4px #991b1b14;white-space:nowrap;overflow-x:auto}.warning-card.show{display:block}.warning-card-title{display:inline;color:#7f1d1d;font-size:12px}
   @media(max-width:900px){.layout{grid-template-columns:1fr;height:auto;min-height:0}.panel,.preview{height:calc(100vh - 105px);min-height:480px}}
-  @media print{body{background:#fff}.header,.panel,.toolbar{display:none}.app{max-width:none;padding:0}.layout{display:block;height:auto;min-height:0}.preview{border:0;box-shadow:none;padding:0;height:auto;min-height:0}#drawing{max-width:100%;max-height:none;width:100%;height:auto}}
+  @media print{body{background:#fff}.header,.panel,.preview-head{display:none}.app{max-width:none;padding:0}.layout{display:block;height:auto;min-height:0}.preview{border:0;box-shadow:none;padding:0;height:auto;min-height:0;overflow:visible}#stage{padding:0;overflow:visible}#drawing{width:100%!important;height:auto!important}}
 </style>
 </head>
 <body>
@@ -89,10 +100,26 @@
         <div id="solveHint" class="hint">Enter any two of W1 + W2, P1 (gap) or P2 (total) &mdash; the third is calculated.</div>
         <div class="buttons" style="margin-top:10px"><button class="btn sm" type="button" id="autoResolve">Auto resolve</button><button class="btn secondary sm" type="button" id="clearPan">Clear</button></div>
       </div>
-      <div class="section"><div class="buttons"><button class="btn" onclick="downloadPNG()">Export PNG</button><button class="btn" onclick="downloadSVG()">Export SVG</button><button class="btn secondary" onclick="window.print()">Print / PDF</button></div>
-      <div class="note"><b>Part numbers:</b> pick a Panasonic part number (or type the three-letter suffix such as KFN) and L, P2, W1 and W2 are filled from the datasheet; the rest is solved. <b>Auto resolve</b> re-applies the datasheet values at any time. <b>Solver:</b> enter any two of <b>W1&nbsp;+&nbsp;W2</b>, <b>P1</b> or <b>P2</b> and the third is calculated &mdash; the field being solved is tagged <i>solved</i> (a resolved part number stays plain). Typing in the solved field hands the calculation over to another field, so P1 + W1 + W2 = P2 always holds. <b>Geometry:</b> P2 is the total outside span, P1 is the inner gap, W1 and W2 are the left and right widths. Each pair is horizontally centred on the same origin.</div></div>
+      <div class="section"><div class="note"><b>Part numbers:</b> pick a Panasonic part number (or type the three-letter suffix such as KFN) and L, P2, W1 and W2 are filled from the datasheet; the rest is solved. <b>Auto resolve</b> re-applies the datasheet values at any time. <b>Solver:</b> enter any two of <b>W1&nbsp;+&nbsp;W2</b>, <b>P1</b> or <b>P2</b> and the third is calculated &mdash; the field being solved is tagged <i>solved</i> (a resolved part number stays plain). Typing in the solved field hands the calculation over to another field, so P1 + W1 + W2 = P2 always holds. <b>Geometry:</b> P2 is the total outside span, P1 is the inner gap, W1 and W2 are the left and right widths. Each pair is horizontally centred on the same origin.</div></div>
     </aside>
-    <main class="preview"><div class="toolbar"><span>Live preview</span></div><div id="warning" class="warning-card" role="alert" aria-live="polite"></div><div id="stage"><svg id="drawing" viewBox="0 0 1200 980" xmlns="http://www.w3.org/2000/svg"></svg></div></main>
+    <main class="preview">
+      <header class="preview-head">
+        <div class="ph-title"><span class="ph-dot" aria-hidden="true"></span>Live preview</div>
+        <div class="ph-actions">
+          <div class="zoom" role="group" aria-label="Zoom">
+            <button type="button" id="zoomOut" title="Zoom out" aria-label="Zoom out">&minus;</button>
+            <button type="button" id="zoomFit" title="Fit to window">Fit</button>
+            <button type="button" id="zoomIn" title="Zoom in" aria-label="Zoom in">+</button>
+            <span class="pct" id="zoomPct">100%</span>
+          </div>
+          <button class="btn ghost sm" type="button" onclick="downloadPNG()">PNG</button>
+          <button class="btn ghost sm" type="button" onclick="downloadSVG()">SVG</button>
+          <button class="btn ghost sm" type="button" onclick="window.print()">Print</button>
+        </div>
+      </header>
+      <div id="warning" class="warning-card" role="alert" aria-live="polite"></div>
+      <div id="stage"><svg id="drawing" viewBox="0 0 1200 860" xmlns="http://www.w3.org/2000/svg"></svg></div>
+    </main>
   </div>
 </div>
 <script>
@@ -106,48 +133,71 @@ const ids=['mainTitle','comment','compName','compPart','cL','panPart','pL'];
 ids.forEach(id=>document.getElementById(id).addEventListener('input',refresh));
 const v=id=>document.getElementById(id).value.trim(); const n=id=>Math.max(0,parseFloat(v(id))||0); const f=x=>x.toFixed(2);
 function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function line(x1,y1,x2,y2,c,dash=''){return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="2" ${dash?`stroke-dasharray="${dash}"`:''}/>`}
+function line(x1,y1,x2,y2,c,dash='',w=1.6,op=1){return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w}" stroke-opacity="${op}" ${dash?`stroke-dasharray="${dash}"`:''}/>`}
 function txt(x,y,s,c=INK,size=18,anchor='middle',weight=700){return `<text x="${x}" y="${y}" fill="${c}" font-family="Arial,Helvetica,sans-serif" font-size="${size}" font-weight="${weight}" text-anchor="${anchor}">${esc(s)}</text>`}
-function arrow(x1,y1,x2,y2,c,label,dy=-10){return `${line(x1,y1,x2,y2,c)}<polygon points="${x1},${y1} ${x1+12},${y1-7} ${x1+12},${y1+7}" fill="${c}"/><polygon points="${x2},${y2} ${x2-12},${y2-7} ${x2-12},${y2+7}" fill="${c}"/>${txt((x1+x2)/2,y1+dy,label,c,18)}`}
-function varrow(x,y1,y2,c,label,side=1){let tx=x+side*17,anch=side>0?'start':'end';return `${line(x,y1,x,y2,c)}<polygon points="${x},${y1} ${x-7},${y1+12} ${x+7},${y1+12}" fill="${c}"/><polygon points="${x},${y2} ${x-7},${y2-12} ${x+7},${y2-12}" fill="${c}"/>${txt(tx,(y1+y2)/2+6,label,c,17,anch)}`}
+function arrow(x1,y1,x2,y2,c,label,dy=-10){const h=4.5,w=10;return `${line(x1,y1,x2,y2,c,'',1.4)}<polygon points="${x1},${y1} ${x1+w},${y1-h} ${x1+w},${y1+h}" fill="${c}"/><polygon points="${x2},${y2} ${x2-w},${y2-h} ${x2-w},${y2+h}" fill="${c}"/>${txt((x1+x2)/2,y1+dy,label,c,13)}`}
+function varrow(x,y1,y2,c,label,side=1){const tx=x+side*13,anch=side>0?'start':'end';return `${line(x,y1,x,y2,c,'',1.4)}<polygon points="${x},${y1} ${x-4.5},${y1+9} ${x+4.5},${y1+9}" fill="${c}"/><polygon points="${x},${y2} ${x-4.5},${y2-9} ${x+4.5},${y2-9}" fill="${c}"/>${txt(tx,(y1+y2)/2+5,label,c,13,anch)}`}
+function ext(x1,y1,x2,y2,c){return line(x1,y1,x2,y2,c,'4 5',1,.5)}
+function wrapText(text,max){const out=[];let cur='';text.split(' ').forEach(w=>{if((cur+' '+w).trim().length>max){out.push(cur);cur=w}else cur+=(cur?' ':'')+w});if(cur)out.push(cur);return out}
 function draw(){
  const c={L:n('cL'),P1:n('cP1'),P2:n('cP2'),W1:n('cW1'),W2:n('cW2')},p={L:n('pL'),P1:n('pP1'),P2:n('pP2'),W1:n('pW1'),W2:n('pW2')};const pReady=p.P2>0&&p.W1>0&&p.W2>0;const cReady=c.P2>0&&c.W1>0&&c.W2>0;const pAny=p.P2>0||p.P1>0||p.W1>0||p.W2>0;
  let warns=[]; if(Math.abs(c.P1+c.W1+c.W2-c.P2)>.03)warns.push('Competitor: W1 + P1 + W2 does not equal P2');if(pReady&&Math.abs(p.P1+p.W1+p.W2-p.P2)>.03)warns.push('Panasonic: W1 + P1 + W2 does not equal P2');const warningCard=document.getElementById('warning');if(warns.length){warningCard.innerHTML='<span class="warning-card-title">Dimension Mismatch: </span>'+warns.map(esc).join(' | ');warningCard.classList.add('show')}else{warningCard.innerHTML='';warningCard.classList.remove('show')}
- const maxSpan=Math.max(c.P2,p.P2,.1), maxL=Math.max(c.L,p.L,.1), sx=Math.min(76,650/maxSpan), sy=Math.min(105,330/maxL); const cx=790, cy=590;
- function geom(d){let outerL=cx-d.P2*sx/2,outerR=cx+d.P2*sx/2,innerL=cx-d.P1*sx/2,innerR=cx+d.P1*sx/2,h=d.L*sy;return {outerL,outerR,innerL,innerR,top:cy-h/2,bottom:cy+h/2,h};}
- const cg=geom(c),pg=geom(p); let compLabel=(v('compName')||'Competitor')+(v('compPart')?' '+v('compPart'):''); let pan=v('panPart').toUpperCase()||'';
- let s=`<rect width="1200" height="820" fill="white"/>${txt(650,40,(v('mainTitle')||'Recommended Land Pattern'),INK,29)}${txt(650,70,'vs',INK,20)}${txt(650,102,(pan?pan+' ':'')+'Solder Terminal Overlay',BLUE,25)}${txt(1166,128,'All dimensions are in mm',INK,14,'end',600)}`;
- // Live-preview comparison table
- const tx=34, ty=142, tw=1132, nameW=382, colW=150, rowH=38;
- s+=`<rect x="${tx}" y="${ty}" width="${tw}" height="${rowH*3}" rx="4" fill="white" stroke="#94a3b8" stroke-width="1.5"/>`;
- s+=`<rect x="${tx}" y="${ty}" width="${tw}" height="${rowH}" fill="#eef2f7"/>`;
- [tx+nameW,tx+nameW+colW,tx+nameW+colW*2,tx+nameW+colW*3,tx+nameW+colW*4].forEach(x=>s+=line(x,ty,x,ty+rowH*3,'#94a3b8'));
- [ty+rowH,ty+rowH*2].forEach(y=>s+=line(tx,y,tx+tw,y,'#94a3b8'));
- s+=txt(tx+12,ty+25,'Part number',INK,15,'start'); ['L','P1','P2','W1','W2'].forEach((k,i)=>s+=txt(tx+nameW+colW*i+colW/2,ty+25,k,INK,15));
- s+=`<rect x="${tx+1}" y="${ty+rowH+1}" width="8" height="${rowH-2}" fill="${RED}"/><rect x="${tx+1}" y="${ty+rowH*2+1}" width="8" height="${rowH-2}" fill="${BLUE}"/>`;
- s+=txt(tx+18,ty+rowH+25,compLabel+' land pattern',RED,14,'start'); s+=txt(tx+18,ty+rowH*2+25,(pan?'Panasonic '+pan+' terminal':(pAny?'Panasonic terminal (manual entry)':'Panasonic terminal \u2013 not selected')),BLUE,14,'start');
- ['L','P1','P2','W1','W2'].forEach((k,i)=>{s+=txt(tx+nameW+colW*i+colW/2,ty+rowH+25,c[k]>0?f(c[k]):'\u2013',RED,14);s+=txt(tx+nameW+colW*i+colW/2,ty+rowH*2+25,p[k]>0?f(p[k]):'\u2013',BLUE,14)});
- s+=line(34,286,1166,286,'#cbd5e1');
- // competitor pads
- if(cReady)s+=`<rect x="${cg.outerL}" y="${cg.top}" width="${c.W1*sx}" height="${cg.h}" fill="#d10b0b0b" stroke="${RED}" stroke-width="3"/><rect x="${cg.innerR}" y="${cg.top}" width="${c.W2*sx}" height="${cg.h}" fill="#d10b0b0b" stroke="${RED}" stroke-width="3"/>`;
- // Panasonic pads
- if(pReady)s+=`<rect x="${pg.outerL}" y="${pg.top}" width="${p.W1*sx}" height="${pg.h}" fill="#0033a014" stroke="${BLUE}" stroke-width="3"/><rect x="${pg.innerR}" y="${pg.top}" width="${p.W2*sx}" height="${pg.h}" fill="#0033a014" stroke="${BLUE}" stroke-width="3"/>`;
- // P2 arrows
- let yC=316,yP=361;if(cReady)s+=line(cg.outerL,cg.top,cg.outerL,yC,RED,'7 5')+line(cg.outerR,cg.top,cg.outerR,yC,RED,'7 5')+arrow(cg.outerL,yC,cg.outerR,yC,RED,`P2 = ${f(c.P2)}`,-12);
- if(pReady)s+=line(pg.outerL,pg.top,pg.outerL,yP,BLUE,'7 5')+line(pg.outerR,pg.top,pg.outerR,yP,BLUE,'7 5')+arrow(pg.outerL,yP,pg.outerR,yP,BLUE,`P2 = ${f(p.P2)}`,-12);
- // vertical L
- if(cReady&&c.L>0)s+=line(cg.outerL,cg.top,cg.outerL-80,cg.top,RED,'7 5')+line(cg.outerL,cg.bottom,cg.outerL-80,cg.bottom,RED,'7 5')+varrow(cg.outerL-65,cg.top,cg.bottom,RED,`L = ${f(c.L)}`,-1);
- if(pReady&&p.L>0)s+=line(pg.outerR,pg.top,pg.outerR+75,pg.top,BLUE,'7 5')+line(pg.outerR,pg.bottom,pg.outerR+75,pg.bottom,BLUE,'7 5')+varrow(pg.outerR+60,pg.top,pg.bottom,BLUE,`L = ${f(p.L)}`,1);
- // bottom dimensions
- let yc=850,yp=925; if(cReady){[cg.outerL,cg.innerL,cg.innerR,cg.outerR].forEach(x=>s+=line(x,cg.bottom,x,yc+16,RED,'7 5'));s+=arrow(cg.outerL,yc,cg.innerL,yc,RED,`W1 = ${f(c.W1)}`,-10)+arrow(cg.innerL,yc,cg.innerR,yc,RED,`P1 = ${f(c.P1)}`,-10)+arrow(cg.innerR,yc,cg.outerR,yc,RED,`W2 = ${f(c.W2)}`,-10);}
- if(pReady){[pg.outerL,pg.innerL,pg.innerR,pg.outerR].forEach(x=>s+=line(x,pg.bottom,x,yp+14,BLUE,'7 5'));s+=arrow(pg.outerL,yp,pg.innerL,yp,BLUE,`W1 = ${f(p.W1)}`,-10)+arrow(pg.innerL,yp,pg.innerR,yp,BLUE,`P1 = ${f(p.P1)}`,-10)+arrow(pg.innerR,yp,pg.outerR,yp,BLUE,`W2 = ${f(p.W2)}`,-10);}
- let comment=v('comment');s+=txt(36,835,'Comment:',INK,17,'start'); let words=comment.split(' '),lines=[],cur='';words.forEach(w=>{if((cur+' '+w).length>39){lines.push(cur);cur=w}else cur+=(cur?' ':'')+w});if(cur)lines.push(cur);lines.slice(0,4).forEach((q,i)=>s+=txt(36,860+i*21,q,INK,15,'start',400));
+ const W=1200,H=860,M=40,MID=W/2,HAIR='#e2e8f0',MUTEDC='#64748b',INKC='#0f172a';
+ const maxSpan=Math.max(c.P2,p.P2,.1), maxL=Math.max(c.L,p.L,.1);
+ const sx=Math.min(70,600/maxSpan), sy=Math.min(84,220/maxL), cy=530;
+ function geom(d){const outerL=MID-d.P2*sx/2,outerR=MID+d.P2*sx/2,innerL=MID-d.P1*sx/2,innerR=MID+d.P1*sx/2,h=d.L*sy;return {outerL,outerR,innerL,innerR,top:cy-h/2,bottom:cy+h/2,h};}
+ const cg=geom(c),pg=geom(p);
+ const compLabel=(v('compName')||'Competitor')+(v('compPart')?' '+v('compPart'):'');
+ const panLabel=v('panPart').toUpperCase();
+ let s=`<rect width="${W}" height="${H}" fill="#ffffff"/>`;
+ // ---- document header
+ const titleA=v('mainTitle')||'Recommended Land Pattern';
+ const titleB=(panLabel?panLabel+' ':'')+'Solder Terminal Overlay';
+ const approx=(titleA.length+titleB.length+5)*13.2;
+ const titleSize=approx>900?Math.max(14,Math.round(25*900/approx)):25;
+ s+=`<text x="${M}" y="54" font-family="Arial,Helvetica,sans-serif" font-size="${titleSize}" font-weight="800" text-anchor="start"><tspan fill="${INKC}">${esc(titleA)}</tspan><tspan fill="${MUTEDC}" font-weight="700"> vs. </tspan><tspan fill="${BLUE}">${esc(titleB)}</tspan></text>`;
+ s+=txt(W-M,54,'All dimensions in mm',MUTEDC,12,'end',600);
+ s+=line(M,84,W-M,84,HAIR);
+ // ---- comparison table
+ const ty=100,rowH=34,nameW=520,tw=W-2*M,colW=(tw-nameW)/5;
+ s+=`<rect x="${M}" y="${ty}" width="${tw}" height="${rowH*3}" rx="10" fill="#ffffff" stroke="${HAIR}"/>`;
+ s+=`<path d="M ${M} ${ty+rowH} L ${M} ${ty+11} Q ${M} ${ty} ${M+11} ${ty} L ${W-M-11} ${ty} Q ${W-M} ${ty} ${W-M} ${ty+11} L ${W-M} ${ty+rowH} Z" fill="#f8fafc"/>`;
+ s+=line(M,ty+rowH,W-M,ty+rowH,HAIR)+line(M,ty+rowH*2,W-M,ty+rowH*2,HAIR);
+ s+=txt(M+16,ty+22,'Part number',MUTEDC,11,'start',700);
+ ['L','P1','P2','W1','W2'].forEach((k,i)=>s+=txt(M+nameW+colW*i+colW/2,ty+22,k,MUTEDC,11,'middle',700));
+ s+=`<circle cx="${M+22}" cy="${ty+rowH+17}" r="5" fill="${RED}"/>`+txt(M+36,ty+rowH+22,compLabel+' land pattern',RED,13.5,'start',700);
+ s+=`<circle cx="${M+22}" cy="${ty+rowH*2+17}" r="5" fill="${pAny?BLUE:'#cbd5e1'}"/>`+txt(M+36,ty+rowH*2+22,(panLabel?'Panasonic '+panLabel+' terminal':(pAny?'Panasonic terminal (manual entry)':'Panasonic terminal \u2013 not selected')),pAny?BLUE:'#94a3b8',13.5,'start',700);
+ ['L','P1','P2','W1','W2'].forEach((k,i)=>{const x=M+nameW+colW*i+colW/2;
+  s+=txt(x,ty+rowH+22,c[k]>0?f(c[k]):'\u2013',c[k]>0?RED:'#cbd5e1',14,'middle',700);
+  s+=txt(x,ty+rowH*2+22,p[k]>0?f(p[k]):'\u2013',p[k]>0?BLUE:'#cbd5e1',14,'middle',700)});
+ // ---- overlay
+ const dTop=ty+rowH*3+22,dBot=772;
+ if(!cReady&&!pReady){
+  s+=`<rect x="${M}" y="${dTop}" width="${tw}" height="${dBot-dTop}" rx="14" fill="#fbfdff" stroke="${HAIR}" stroke-dasharray="7 9"/>`;
+  s+=txt(MID,dTop+(dBot-dTop)/2-2,'Enter dimensions, or pick a Panasonic part number','#9aa7b8',17,'middle',600);
+  s+=txt(MID,dTop+(dBot-dTop)/2+26,'P1 is calculated from P2 \u2212 W1 \u2212 W2','#c3cddb',13,'middle',600);
+ }else{
+  if(cReady)s+=`<rect x="${cg.outerL}" y="${cg.top}" width="${c.W1*sx}" height="${cg.h}" rx="3" fill="#d10b0b10" stroke="${RED}" stroke-width="2.5"/><rect x="${cg.innerR}" y="${cg.top}" width="${c.W2*sx}" height="${cg.h}" rx="3" fill="#d10b0b10" stroke="${RED}" stroke-width="2.5"/>`;
+  if(pReady)s+=`<rect x="${pg.outerL}" y="${pg.top}" width="${p.W1*sx}" height="${pg.h}" rx="3" fill="#0033a014" stroke="${BLUE}" stroke-width="2.5"/><rect x="${pg.innerR}" y="${pg.top}" width="${p.W2*sx}" height="${pg.h}" rx="3" fill="#0033a014" stroke="${BLUE}" stroke-width="2.5"/>`;
+  const yC=368,yP=400;
+  if(cReady)s+=ext(cg.outerL,cg.top,cg.outerL,yC,RED)+ext(cg.outerR,cg.top,cg.outerR,yC,RED)+arrow(cg.outerL,yC,cg.outerR,yC,RED,`P2 = ${f(c.P2)}`,-9);
+  if(pReady)s+=ext(pg.outerL,pg.top,pg.outerL,yP,BLUE)+ext(pg.outerR,pg.top,pg.outerR,yP,BLUE)+arrow(pg.outerL,yP,pg.outerR,yP,BLUE,`P2 = ${f(p.P2)}`,-9);
+  if(cReady&&c.L>0)s+=ext(cg.outerL,cg.top,cg.outerL-56,cg.top,RED)+ext(cg.outerL,cg.bottom,cg.outerL-56,cg.bottom,RED)+varrow(cg.outerL-44,cg.top,cg.bottom,RED,`L = ${f(c.L)}`,-1);
+  if(pReady&&p.L>0)s+=ext(pg.outerR,pg.top,pg.outerR+56,pg.top,BLUE)+ext(pg.outerR,pg.bottom,pg.outerR+56,pg.bottom,BLUE)+varrow(pg.outerR+44,pg.top,pg.bottom,BLUE,`L = ${f(p.L)}`,1);
+  const yc=690,yp=736;
+  if(cReady){[cg.outerL,cg.innerL,cg.innerR,cg.outerR].forEach(x=>s+=ext(x,cg.bottom,x,yc+12,RED));s+=arrow(cg.outerL,yc,cg.innerL,yc,RED,`W1 = ${f(c.W1)}`,-9)+arrow(cg.innerL,yc,cg.innerR,yc,RED,`P1 = ${f(c.P1)}`,-9)+arrow(cg.innerR,yc,cg.outerR,yc,RED,`W2 = ${f(c.W2)}`,-9);}
+  if(pReady){[pg.outerL,pg.innerL,pg.innerR,pg.outerR].forEach(x=>s+=ext(x,pg.bottom,x,yp+12,BLUE));s+=arrow(pg.outerL,yp,pg.innerL,yp,BLUE,`W1 = ${f(p.W1)}`,-9)+arrow(pg.innerL,yp,pg.innerR,yp,BLUE,`P1 = ${f(p.P1)}`,-9)+arrow(pg.innerR,yp,pg.outerR,yp,BLUE,`W2 = ${f(p.W2)}`,-9);}
+ }
+ // ---- comment
+ s+=line(M,786,W-M,786,HAIR);
+ s+=txt(M,806,'COMMENT','#94a3b8',10,'start',800);
+ wrapText(v('comment')||'',118).slice(0,2).forEach((q,i)=>s+=txt(M,826+i*18,q,'#475569',12.5,'start',400));
  document.getElementById('drawing').innerHTML=s;
 }
-function svgText(){let svg=document.getElementById('drawing').cloneNode(true);svg.setAttribute('xmlns','http://www.w3.org/2000/svg');return new XMLSerializer().serializeToString(svg)}
+function svgText(){let svg=document.getElementById('drawing').cloneNode(true);svg.setAttribute('xmlns','http://www.w3.org/2000/svg');svg.setAttribute('width','1200');svg.setAttribute('height','860');return new XMLSerializer().serializeToString(svg)}
 function fileBase(){return (v('panPart')||'land-pattern-overlay').replace(/[^a-z0-9_-]+/gi,'_')+'_overlay'}
 function downloadSVG(){let blob=new Blob([svgText()],{type:'image/svg+xml'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fileBase()+'.svg';a.click();URL.revokeObjectURL(a.href)}
-function downloadPNG(){let source=svgText(),img=new Image(),url=URL.createObjectURL(new Blob([source],{type:'image/svg+xml'}));img.onload=()=>{let canvas=document.createElement('canvas');canvas.width=2400;canvas.height=1960;let ctx=canvas.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);URL.revokeObjectURL(url);canvas.toBlob(blob=>{let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fileBase()+'.png';a.click();URL.revokeObjectURL(a.href)},'image/png')};img.src=url}
+function downloadPNG(){let source=svgText(),img=new Image(),url=URL.createObjectURL(new Blob([source],{type:'image/svg+xml'}));img.onload=()=>{let canvas=document.createElement('canvas');canvas.width=2400;canvas.height=1720;let ctx=canvas.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);URL.revokeObjectURL(url);canvas.toBlob(blob=>{let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fileBase()+'.png';a.click();URL.revokeObjectURL(a.href)},'image/png')};img.src=url}
 
 /* ---------------- Panasonic part number catalog ---------------- */
 const CATALOG=window.PCC_CATALOG||{parts:[],suffixes:{}};
@@ -378,7 +428,26 @@ byId('compClear').addEventListener('click',()=>{
 });
 compSolver.markFilled(false);
 
+/* ---------------- preview zoom ---------------- */
+const ZOOMS=[1,1.25,1.5,2,3];
+let zoomIdx=0,lastStage='';
+function applyZoom(){
+ const stage=byId('stage'),svg=byId('drawing'),z=ZOOMS[zoomIdx];
+ const fit=Math.min((stage.clientWidth-20)/1200,(stage.clientHeight-20)/860);
+ const w=Math.max(140,Math.round(1200*fit*z));
+ svg.setAttribute('width',w);
+ svg.setAttribute('height',Math.round(w*860/1200));
+ stage.style.alignItems=z>1?'flex-start':'center';
+ stage.style.justifyContent=z>1?'flex-start':'center';
+ byId('zoomPct').textContent=Math.round(z*100)+'%';
+}
+byId('zoomIn').addEventListener('click',()=>{if(zoomIdx<ZOOMS.length-1){zoomIdx++;applyZoom();}});
+byId('zoomOut').addEventListener('click',()=>{if(zoomIdx>0){zoomIdx--;applyZoom();}});
+byId('zoomFit').addEventListener('click',()=>{zoomIdx=0;applyZoom();});
+if(window.ResizeObserver)new ResizeObserver(()=>{const key=byId('stage').clientWidth+'x'+byId('stage').clientHeight;if(key!==lastStage){lastStage=key;applyZoom();}}).observe(byId('stage'));
+
 refresh();
+applyZoom();
 </script>
 </body>
 </html>
