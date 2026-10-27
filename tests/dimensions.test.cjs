@@ -4,7 +4,7 @@ const vm = require('node:vm');
 const path = require('node:path');
 const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
 const core = html.split('/* BEGIN APPLICATION */')[1].split('/* DOM APPLICATION */')[0];
-const api = vm.runInNewContext(core + '\n({newPattern, numbers, solvePattern, editDimension, setSameWidth, validatePattern, geometry, renderScene, reportSVG})');
+const api = vm.runInNewContext(core + '\n({newPattern, numbers, solvePattern, editDimension, setSameWidth, validatePattern, geometry, renderScene, reportSVG, automaticComment})');
 let checks = 0;
 function test(name, fn) { fn(); checks++; console.log('PASS ' + name); }
 const base = () => api.newPattern({L:'3.4',P1:'2.7',P2:'8.4',W1:'2.85',W2:'2.85'});
@@ -51,9 +51,23 @@ test('rendering uses a single scale and includes every dimension', () => {
  for(const key of ['L','P1','P2','W1','W2'])assert.ok(result.markup.includes('data-label="'+key+'"'));
  assert.ok(result.markup.includes('stroke-width="0.55"'));assert.ok(result.markup.includes('X (mm)'));
 });
-test('report always retains dimension annotations, escapes text, and omits grid by default', () => {
+test('report always retains dimension annotations, escapes text, and includes grid by default', () => {
  const p=base();p.label='<Bourns & part>';const report=api.reportSVG({c:p,p:api.newPattern()},'Test <title>','Comment & details');
- assert.ok(report.includes('&lt;Bourns &amp; part&gt;'));assert.ok(report.includes('Not to physical scale'));assert.ok(!report.includes('data-layer="grid"'));
- assert.ok(report.includes('data-label="W2"'));assert.ok(api.reportSVG({c:p,p:api.newPattern()},'T','',true).includes('data-layer="grid"'));
+ assert.ok(report.includes('&lt;Bourns &amp; part&gt;'));assert.ok(report.includes('Not to physical scale'));assert.ok(report.includes('data-layer="grid"'));
+ assert.ok(report.includes('data-label="W2"'));assert.ok(!api.reportSVG({c:p,p:api.newPattern()},'T','',false).includes('data-layer="grid"'));
+});
+test('automatic comment uses committed component identities and sensible fallbacks', () => {
+ const patterns={c:base(),p:api.newPattern()};patterns.c.label='Bourns SRP';patterns.p.label='ETQP3M4R7KVN';
+ assert.equal(api.automaticComment(patterns),'Panasonic ETQP3M4R7KVN solder terminals overlaid on Bourns SRP recommended land pattern.');
+ patterns.c.label='';patterns.p.label='';
+ assert.equal(api.automaticComment(patterns),'Panasonic solder terminals overlaid on the competitor recommended land pattern.');
+});
+test('long report comments wrap above the table without the old footer', () => {
+ const report=api.reportSVG({c:base(),p:api.newPattern()},'A long document title '.repeat(4),'Long comment text '.repeat(15));
+ const titleY=[...report.matchAll(/y="([^"]+)"[^>]*data-report-title="true"/g)].map(m=>Number(m[1]));
+ const commentY=[...report.matchAll(/y="([^"]+)"[^>]*data-report-comment="true"/g)].map(m=>Number(m[1]));
+ const tableY=Number(report.match(/data-report-table="true" x="40" y="([^"]+)"/)[1]);
+ assert.ok(commentY.length>1);assert.ok(Math.min(...commentY)>Math.max(...titleY));assert.ok(Math.max(...commentY)<tableY);
+ assert.ok(!report.includes('COMMENT'));assert.ok(!report.includes('Competitor: land pattern (red)'));
 });
 console.log(`${checks} checks passed.`);

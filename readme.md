@@ -11,7 +11,8 @@ A single offline HTML file for comparing competitor land patterns with Panasonic
 - **Same width** explicitly links W1 and W2 in either mode. Enabling it uses the last edited width (or the other populated width). Unlinked widths can differ; the solver never assumes they are equal.
 - Selecting a catalog part, or entering a recognized part or suffix and pressing Enter, loads its datasheet dimensions once. For example, `ETQP3M4R7KVN` or `KFN`. No load button is needed. Unequal catalog widths automatically disable the width link.
 - Missing datasheet dimensions remain blank and are identified in the source message; body length is not substituted for terminal span.
-- Title and comment are under Document settings.
+- Title and comment appear in the main header and remain editable under Document settings. The default title is **Recommended Land Pattern**. Comments automatically name the selected Panasonic part and competitor using “solder terminals overlaid on”; a manually edited comment is preserved.
+- Red Clear actions sit beside Dimensions (mm). The drawing automatically fits its space; there are no zoom controls.
 
 ## Drawing and downloads
 
@@ -19,7 +20,7 @@ The geometry uses **one shared scale on both axes**. X increases rightwards and 
 
 The view includes an adaptive mm grid, labeled axes, and all five dimension annotations for each component. Perpendicular extension lines are 0.55 px, lighter than the 0.9 px dimension arrows and 1.6 px pad outlines. The preview's Dimensions switch does not remove annotations from exported reports.
 
-**Export** offers PDF, PNG, SVG, and Print. Reports include the title, component names, dimension table, annotated overlay, legend, and comment. Grid and axes are optional and off by default. PDF is vector A4 landscape, labeled “Not to physical scale”; PNG is 2400 × 1696. An export-ready link allows retrying a download. Incomplete patterns are identified in the report footer.
+**Export** offers PDF, PNG, and Print. Reports show the title and wrapped comment first, followed by the colored component table and annotated overlay. There is no separate COMMENT footer or repeated legend sentence. Grid and axes are optional and on by default. PDF is vector A4 landscape, labeled “Not to physical scale”; PNG is 2400 × 1696. An export-ready link allows retrying a download. Incomplete patterns are identified in the report footer.
 
 PDF libraries and the part catalog are bundled into the HTML so exports work offline. See [PDF dependency notes](docs/pdf-dependencies.md) for versions, licenses, and update instructions.
 
@@ -34,7 +35,7 @@ The regression checks cover manual preservation, calculation handoff, linked/ind
 
 Application code is between `BEGIN APPLICATION` / `END APPLICATION`. Pure solver and rendering functions precede `DOM APPLICATION`; tests execute those functions directly from the HTML. Generated catalog markers are unchanged.
 
-Browser verification: desktop and narrow-screen layouts; full part-number and suffix selection; mode changes and independent widths; all five annotations per component; generated PDF/PNG/SVG. The PDF was rendered and visually checked as a single A4 landscape page.
+Browser verification: desktop and narrow-screen layouts; full part-number and suffix selection; mode changes and independent widths; all five annotations per component; generated PDF/PNG reports. The PDF was rendered and visually checked as a single A4 landscape page.
 
 ---
 
