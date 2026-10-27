@@ -1,3 +1,47 @@
+# Land Pattern Overlay
+
+A single offline HTML file for comparing competitor land patterns with Panasonic solder terminals. Open `index.html` directly in a modern browser; no server or build is required.
+
+## Current interface
+
+- A full-height 440 px light sidebar, with a Settings drawer below 960 px.
+- One combined competitor manufacturer / part-number field.
+- Five dimension inputs on one row: **L, P1, P2, W1, W2**, with **Height, Inner gap, Total span, Left width, Right width** subtitles.
+- Independent **Manual / Auto resolve** controls for each component. Manual mode never runs the solver. Auto mode calculates a dependent value; editing that value moves the calculation to another field.
+- **Same width** explicitly links W1 and W2 in either mode. Enabling it uses the last edited width (or the other populated width). Unlinked widths can differ; the solver never assumes they are equal.
+- Selecting a catalog part, or entering a recognized part or suffix and pressing Enter, loads its datasheet dimensions once. For example, `ETQP3M4R7KVN` or `KFN`. No load button is needed. Unequal catalog widths automatically disable the width link.
+- Missing datasheet dimensions remain blank and are identified in the source message; body length is not substituted for terminal span.
+- Title and comment are under Document settings.
+
+## Drawing and downloads
+
+The geometry uses **one shared scale on both axes**. X increases rightwards and Y upwards. Both components share the midpoint of their outer span; asymmetric pads are positioned from their actual widths. Zero inner gap is valid. Inconsistent or incomplete patterns are omitted from the drawing rather than shown with misleading geometry.
+
+The view includes an adaptive mm grid, labeled axes, and all five dimension annotations for each component. Perpendicular extension lines are 0.55 px, lighter than the 0.9 px dimension arrows and 1.6 px pad outlines. The preview's Dimensions switch does not remove annotations from exported reports.
+
+**Export** offers PDF, PNG, SVG, and Print. Reports include the title, component names, dimension table, annotated overlay, legend, and comment. Grid and axes are optional and off by default. PDF is vector A4 landscape, labeled “Not to physical scale”; PNG is 2400 × 1696. An export-ready link allows retrying a download. Incomplete patterns are identified in the report footer.
+
+PDF libraries and the part catalog are bundled into the HTML so exports work offline. See [PDF dependency notes](docs/pdf-dependencies.md) for versions, licenses, and update instructions.
+
+## Checks and maintenance
+
+```sh
+node tests/dimensions.test.cjs
+.venv/bin/python tools/build_catalog.py --check
+```
+
+The regression checks cover manual preservation, calculation handoff, linked/independent widths, missing or invalid inputs, asymmetric geometry, common-axis scaling, annotation retention, and escaped export text. The catalog check uses today's generation date; regenerate with `.venv/bin/python tools/build_catalog.py` when needed. This updates both the embedded catalog and `data/catalog.json`.
+
+Application code is between `BEGIN APPLICATION` / `END APPLICATION`. Pure solver and rendering functions precede `DOM APPLICATION`; tests execute those functions directly from the HTML. Generated catalog markers are unchanged.
+
+Browser verification: desktop and narrow-screen layouts; full part-number and suffix selection; mode changes and independent widths; all five annotations per component; generated PDF/PNG/SVG. The PDF was rendered and visually checked as a single A4 landscape page.
+
+---
+
+## Historical notes (before the October 2026 redesign)
+
+The notes below record earlier iterations. The current behavior is described above.
+
 # Land Pattern Overlay Generator: Project History and Handover
 
 ## 1. Project objective
