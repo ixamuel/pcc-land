@@ -11,14 +11,16 @@ A single offline HTML file for comparing competitor land patterns with Panasonic
 - **Same width** explicitly links W1 and W2 in either mode. Enabling it uses the last edited width (or the other populated width). Unlinked widths can differ; the solver never assumes they are equal.
 - Selecting a catalog part, or entering a recognized part or suffix and pressing Enter, loads its datasheet dimensions once. For example, `ETQP3M4R7KVN` or `KFN`. No load button is needed. Unequal catalog widths automatically disable the width link.
 - Missing datasheet dimensions remain blank and are identified in the source message; body length is not substituted for terminal span.
-- Title and comment appear in the main header and remain editable under Document settings. The default title is **Recommended Land Pattern**. Comments automatically name the selected Panasonic part and competitor using “solder terminals overlaid on”; a manually edited comment is preserved.
+- Title and comment appear in the main header and remain editable under Document settings. The default title is **Recommended Land Pattern**. Comments automatically name the selected Panasonic part and competitor using “Panasonic [PN] solder terminals on [competitor] recommended land pattern.”; a manually edited comment is preserved.
 - Red Clear actions sit beside Dimensions (mm). The drawing automatically fits its space; there are no zoom controls.
 
 ## Drawing and downloads
 
 The geometry uses **one shared scale on both axes**. X increases rightwards and Y upwards. Both components share the midpoint of their outer span; asymmetric pads are positioned from their actual widths. Zero inner gap is valid. Inconsistent or incomplete patterns are omitted from the drawing rather than shown with misleading geometry.
 
-The view includes an adaptive mm grid, labeled axes, and all five dimension annotations for each component. Perpendicular extension lines are 0.55 px, lighter than the 0.9 px dimension arrows and 1.6 px pad outlines. The preview's Dimensions switch does not remove annotations from exported reports.
+The view includes an adaptive mm grid, labeled axes, and all five dimension annotations for each component. Perpendicular extension lines are 0.55 px, lighter than the 0.9 px dimension arrows and 1.6 px pad outlines. L labels run parallel to their arrows, with the bottom of each label facing its terminal. The Dimensions dropdown controls component dimensions in the preview; exported reports retain those annotations.
+
+The same dropdown offers **P1–P1 distances**, off by default. It measures from each competitor inner edge to the corresponding Panasonic inner edge using actual pad coordinates. Equal displayed values use **D** on both sides; unequal values use **Dₗ** and **Dᵣ**. Negative values retain their sign, and zero uses an alignment tick. Overlapping distance intervals use separate annotation rows. When enabled, distances appear only in the drawing in the preview, PDF, PNG, and Print; they do not add table rows.
 
 **Export** offers PDF, PNG, and Print. Reports show the title and wrapped comment first, followed by the colored component table and annotated overlay. There is no separate COMMENT footer or repeated legend sentence. Grid and axes are optional and on by default. PDF is vector A4 landscape, labeled “Not to physical scale”; PNG is 2400 × 1696. An export-ready link allows retrying a download. Incomplete patterns are identified in the report footer.
 
