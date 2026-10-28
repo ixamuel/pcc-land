@@ -850,7 +850,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){const wasDimensions
 function setSettings(open){byId('app').classList.toggle('settings-open',open);byId('openSettings').setAttribute('aria-expanded',open);if(open)byId('closeSettings').focus();}
 byId('openSettings').addEventListener('click',()=>setSettings(true));byId('closeSettings').addEventListener('click',()=>{setSettings(false);byId('openSettings').focus();});
 const currentReport=()=>{syncDocument();return reportSVG(patterns,byId('mainTitle').value.trim(),byId('comment').value.trim(),byId('exportGrid').checked,view.distances);};
-const fileBase=()=>((patterns.p.label||patterns.c.label||'land-pattern').replace(/[^a-z0-9_-]+/gi,'_')||'land-pattern')+'_overlay';
+const fileBase=()=>(([patterns.p.label,patterns.c.label].map(label=>label.trim().replace(/[^a-z0-9_-]+/gi,'_').replace(/_+/g,'_').replace(/^_+|_+$/g,'')).filter(Boolean).join('_'))||'land-pattern')+'_overlay';
 async function saveBlob(blob,name){
   const url=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('Could not prepare download.'));reader.readAsDataURL(blob);});
   const status=byId('exportStatus'),link=document.createElement('a');
