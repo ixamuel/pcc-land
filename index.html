@@ -23,7 +23,7 @@
  <aside class="sidebar" aria-label="Pattern settings" id="settings">
   <header class="brand"><h1>Land pattern overlay</h1><p class="subtitle">Compare pads and solder terminals. All dimensions in mm.</p><button class="button mobile-only close-settings" id="closeSettings" aria-label="Close settings">×</button></header>
   <section class="section" aria-labelledby="cHeading"><div class="section-head"><h2 id="cHeading"><i class="swatch " aria-hidden="true"></i>Competitor land pattern</h2></div>
-<label class="field" for="compName">Manufacturer / part number<input id="compName" value="Bourns" placeholder="e.g. Bourns SRP…" maxlength="80"></label>
+<label class="field" for="compName">Manufacturer / part number<input id="compName" placeholder="Bourns..." maxlength="80"></label>
 <div class="mode auto" id="cMode" role="group" aria-label="Competitor calculation mode"><button type="button" data-mode="manual" aria-pressed="false">Manual</button><button type="button" data-mode="auto" aria-pressed="true">Auto resolve</button></div>
 <div class="dimension-caption"><span>Dimensions (mm)</span><button class="text-button" id="cClear" type="button" aria-label="Clear competitor dimensions">Clear</button></div><div class="dim-grid"><div class="dim-field"><label for="cL">L<span class="sub">Height</span></label><input id="cL" type="number" min="0.01" step="0.01" inputmode="decimal" aria-label="Competitor Height (L), mm" aria-describedby="cFeedback"><span class="calc-label" aria-hidden="true">Calculated</span></div>
 <div class="dim-field"><label for="cP1">P1<span class="sub">Inner gap</span></label><input id="cP1" type="number" min="0" step="0.01" inputmode="decimal" aria-label="Competitor Inner gap (P1), mm" aria-describedby="cFeedback"><span class="calc-label" aria-hidden="true">Calculated</span></div>
@@ -686,7 +686,7 @@ function reportSVG(patterns,title,comment,grid=true,distances=false) {
 /* DOM APPLICATION */
 const byId=id=>document.getElementById(id);
 const patterns={c:newPattern({L:'3.40',P1:'2.70',P2:'8.40',W1:'2.85',W2:'2.85'}),p:newPattern()};
-patterns.c.label='Bourns';
+patterns.c.label='';
 const view={grid:true,dimensions:true,distances:false};
 const catalog=window.PCC_CATALOG||{parts:[],suffixes:{}};
 const partMap=new Map(catalog.parts.map(p=>[p.pn.toUpperCase(),p]));
