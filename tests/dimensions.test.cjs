@@ -4,7 +4,7 @@ const vm = require('node:vm');
 const path = require('node:path');
 const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
 const core = html.split('/* BEGIN APPLICATION */')[1].split('/* DOM APPLICATION */')[0];
-const api = vm.runInNewContext(core + '\n({newPattern, numbers, solvePattern, editDimension, setSameWidth, validatePattern, geometry, edgeDistances, renderScene, reportSVG, automaticComment})');
+const api = vm.runInNewContext(core + '\n({newPattern, numbers, solvePattern, editDimension, setSameWidth, validatePattern, geometry, edgeDistances, renderScene, reportSVG, automaticComment, automaticTitle, exportFileBase})');
 let checks = 0;
 function test(name, fn) { fn(); checks++; console.log('PASS ' + name); }
 const base = () => api.newPattern({L:'3.4',P1:'2.7',P2:'8.4',W1:'2.85',W2:'2.85'});
@@ -59,6 +59,11 @@ test('report always retains dimension annotations, escapes text, and includes gr
 test('automatic comment uses committed component identities and sensible fallbacks', () => {
  const patterns={c:base(),p:api.newPattern()};patterns.c.label='Bourns SRP';patterns.p.label='ETQP3M4R7KVN';
  assert.equal(api.automaticComment(patterns),'Panasonic ETQP3M4R7KVN solder terminals on Bourns SRP recommended land pattern.');
+ assert.equal(api.automaticComment(patterns,'terminal'),'Panasonic ETQP3M4R7KVN solder terminals on Bourns SRP terminal.');
+ assert.equal(api.automaticTitle(),'Recommended Land Pattern');assert.equal(api.automaticTitle('terminal'),'Terminal');
+ assert.equal(api.exportFileBase('ETQP3M100KVN','Bourns SRP6038','land'),'ETQP3M100KVN_Bourns_SRP6038_land_overlay');
+ assert.equal(api.exportFileBase('ETQP3M100KVN','Bourns SRP6038','terminal'),'ETQP3M100KVN_Bourns_SRP6038_terminal_overlay');
+ assert.equal(api.exportFileBase('ETQP3M100KVN','Bourns/SRP 6038','terminal'),'ETQP3M100KVN_Bourns_SRP_6038_terminal_overlay');
  patterns.c.label='';patterns.p.label='';
  assert.equal(api.automaticComment(patterns),'Panasonic solder terminals on the competitor recommended land pattern.');
 });

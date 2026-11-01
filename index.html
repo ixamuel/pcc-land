@@ -8,7 +8,7 @@
 :root{--ink:#24333e;--muted:#657480;--border:#dce3e8;--surface:#f7f9fa;--blue:#285e9e;--red:#b64e49;--accent:#344f61;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);background:var(--surface);font-synthesis:none}
 *{box-sizing:border-box}body{margin:0}button,input,textarea{font:inherit;color:inherit}button{cursor:pointer}button:disabled{cursor:wait;opacity:.55}button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid #5687b2;outline-offset:3px}[hidden]{display:none!important}
 .app{display:grid;grid-template-columns:440px minmax(0,1fr);height:100dvh;overflow:hidden}.sidebar{background:#fff;border-right:1px solid var(--border);min-height:0;overflow-y:auto}.brand{padding:25px 20px 22px;border-bottom:1px solid var(--border)}h1{font-size:21px;font-weight:600;letter-spacing:-.5px;margin:0 0 6px}.subtitle{font-size:12px;color:var(--muted);margin:0;line-height:1.5}.section{padding:22px 20px;border-bottom:1px solid var(--border)}.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:8px}h2{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600;margin:0}.swatch{width:8px;height:8px;background:var(--red);display:inline-block;border-radius:2px;flex-shrink:0}.swatch.blue{background:var(--blue)}.text-button{padding:4px;border:0;background:none;font-size:12px;color:var(--muted)}.text-button:hover{color:var(--ink)}.dimension-caption .text-button{color:var(--red);padding:0 4px}.dimension-caption .text-button:hover{color:#8c302d;text-decoration:underline}label{display:block;font-size:12px;font-weight:500}.field input,.field textarea{display:block;width:100%;height:40px;border:1px solid #cdd7df;border-radius:6px;background:#fff;padding:8px 10px;font-size:14px;margin-top:7px}.field textarea{height:80px;resize:vertical}.field+.field{margin-top:16px}
-.mode{display:grid;grid-template-columns:1fr 1fr;background:#f0f3f5;border-radius:6px;padding:3px;position:relative;margin:18px 0}.mode:before{box-sizing:border-box;position:absolute;content:"";left:3px;top:3px;bottom:3px;width:calc(50% - 3px);border:1px solid #d4dee5;background:#fff;border-radius:4px;transition:transform .16s}.mode.auto:before{transform:translateX(100%)}.mode button{height:32px;border:0;background:none;position:relative;font-size:12px;color:var(--muted)}.mode button[aria-pressed=true]{color:var(--ink);font-weight:600}.dimension-caption{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:11px;color:var(--muted)}.dim-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.dim-field{min-width:0;text-align:center}.dim-field label{font-size:13px;font-weight:600}.dim-field .sub{display:block;font-size:10px;font-weight:400;color:var(--muted);line-height:14px;min-height:14px;margin-top:4px}.dim-field input{width:100%;height:40px;margin-top:5px;padding:8px 3px;text-align:center;font-size:13px;font-variant-numeric:tabular-nums;border:1px solid #cdd7df;border-radius:5px;background:white;appearance:textfield;-moz-appearance:textfield}.dim-field input::-webkit-inner-spin-button,.dim-field input::-webkit-outer-spin-button{appearance:none;margin:0}.dim-field input.calculated{background:#f0f5f8;border-color:#aebfcb}.dim-field input[aria-invalid=true]{border-color:#ba6350;background:#fff8f4}.calc-label{display:block;height:17px;margin-top:5px;font-size:9px;color:#526e83;visibility:hidden}.dim-field.is-calculated .calc-label{visibility:visible}.switch-row{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:12px;margin-top:10px;font-weight:400}.switch-row .muted{color:var(--muted)}.switch{appearance:none;width:34px;height:20px;border-radius:12px;background:#c6d0d7;position:relative;flex-shrink:0;margin:0;cursor:pointer}.switch:before{content:"";position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;left:3px;top:3px;transition:transform .16s}.switch:checked{background:var(--accent)}.switch:checked:before{transform:translateX(14px)}.feedback{font-size:11px;line-height:1.5;color:var(--muted);margin:14px 0 0;min-height:17px;overflow-wrap:anywhere}.feedback.error{color:#a04e32}.source{font-size:11px;color:var(--muted);line-height:1.5;margin-top:8px}.source.warning{color:#a04e32}#pnSource{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 12px}#pnSource>span{flex:1 1 240px}.datasheet-link{color:var(--blue);white-space:nowrap;text-decoration:none;margin-left:auto}.datasheet-link:hover{text-decoration:underline}.datasheet-link:focus-visible{outline:2px solid #5687b2;outline-offset:3px}.sidebar details{border-bottom:1px solid var(--border);padding:18px 20px}.sidebar summary{font-size:13px;cursor:pointer}.details-content{padding-top:18px}.guide{font-size:12px;line-height:1.7;color:var(--muted);margin:0}.guide dt{color:var(--ink);font-weight:500;float:left;width:32px}.guide dd{margin-left:40px;margin-bottom:6px}
+.mode{display:grid;grid-template-columns:1fr 1fr;background:#f0f3f5;border-radius:6px;padding:3px;position:relative;margin:18px 0}.mode:before{box-sizing:border-box;position:absolute;content:"";left:3px;top:3px;bottom:3px;width:calc(50% - 3px);border:1px solid #d4dee5;background:#fff;border-radius:4px;transition:transform .16s}.mode.auto:before,.mode.terminal:before{transform:translateX(100%)}.mode button{height:32px;border:0;background:none;position:relative;font-size:12px;color:var(--muted)}.mode button[aria-pressed=true]{color:var(--ink);font-weight:600}.dimension-caption{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:11px;color:var(--muted)}.dim-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.dim-field{min-width:0;text-align:center}.dim-field label{font-size:13px;font-weight:600}.dim-field .sub{display:block;font-size:10px;font-weight:400;color:var(--muted);line-height:14px;min-height:14px;margin-top:4px}.dim-field input{width:100%;height:40px;margin-top:5px;padding:8px 3px;text-align:center;font-size:13px;font-variant-numeric:tabular-nums;border:1px solid #cdd7df;border-radius:5px;background:white;appearance:textfield;-moz-appearance:textfield}.dim-field input::-webkit-inner-spin-button,.dim-field input::-webkit-outer-spin-button{appearance:none;margin:0}.dim-field input.calculated{background:#f0f5f8;border-color:#aebfcb}.dim-field input[aria-invalid=true]{border-color:#ba6350;background:#fff8f4}.calc-label{display:block;height:17px;margin-top:5px;font-size:9px;color:#526e83;visibility:hidden}.dim-field.is-calculated .calc-label{visibility:visible}.switch-row{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:12px;margin-top:10px;font-weight:400}.switch-row .muted{color:var(--muted)}.switch{appearance:none;width:34px;height:20px;border-radius:12px;background:#c6d0d7;position:relative;flex-shrink:0;margin:0;cursor:pointer}.switch:before{content:"";position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;left:3px;top:3px;transition:transform .16s}.switch:checked{background:var(--accent)}.switch:checked:before{transform:translateX(14px)}.feedback{font-size:11px;line-height:1.5;color:var(--muted);margin:14px 0 0;min-height:17px;overflow-wrap:anywhere}.feedback.error{color:#a04e32}.source{font-size:11px;color:var(--muted);line-height:1.5;margin-top:8px}.source.warning{color:#a04e32}#pnSource{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 12px}#pnSource>span{flex:1 1 240px}.datasheet-link{color:var(--blue);white-space:nowrap;text-decoration:none;margin-left:auto}.datasheet-link:hover{text-decoration:underline}.datasheet-link:focus-visible{outline:2px solid #5687b2;outline-offset:3px}.sidebar details{border-bottom:1px solid var(--border);padding:18px 20px}.sidebar summary{font-size:13px;cursor:pointer}.details-content{padding-top:18px}.guide{font-size:12px;line-height:1.7;color:var(--muted);margin:0}.guide dt{color:var(--ink);font-weight:500;float:left;width:32px}.guide dd{margin-left:40px;margin-bottom:6px}
 .combo{position:relative}.combo input{padding-right:36px}.combo.has-copy input{padding-right:72px}.combo-toggle.copy-part{right:40px}.copy-part svg{display:block;width:16px;height:16px}.copy-part .copy-check{display:none}.copy-part.copied .copy-squares{display:none}.copy-part.copied .copy-check{display:block}.copy-part.copied{color:var(--blue)}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}.copy-error{display:block;color:#a04e32;font-size:11px;line-height:1.5;margin-top:7px}.combo-toggle{position:absolute;right:4px;top:4px;width:32px;height:32px;display:grid;place-items:center;padding:0;border:0;border-radius:4px;background:none;color:var(--muted)}.combo-toggle:hover{background:#edf3f7;color:var(--accent)}.disclosure-chevron{display:block;width:16px;height:16px;flex-shrink:0;transition:transform .16s}.combo input[aria-expanded=true]+.combo-toggle .disclosure-chevron,.sidebar details[open]>summary .disclosure-chevron,#toggleDimensions[aria-expanded=true] .disclosure-chevron{transform:rotate(180deg)}.sidebar summary{display:flex;align-items:center;justify-content:space-between;gap:12px;list-style:none}.sidebar summary::-webkit-details-marker{display:none}.sidebar summary::marker{content:""}.sidebar summary .disclosure-chevron{color:var(--muted)}#toggleDimensions{display:inline-flex;align-items:center;gap:6px}.combo-list{position:absolute;z-index:25;left:0;right:0;top:calc(100% + 4px);margin:0;padding:5px;list-style:none;max-height:240px;overflow-y:auto;background:#fff;border:1px solid var(--border);border-radius:6px;box-shadow:0 8px 24px #1d30451a}.combo-list li{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;padding:9px 7px;border-radius:4px;cursor:pointer}.combo-list li[aria-selected=true],.combo-list li:hover{background:#edf3f8}.combo-list small{font-size:10px;color:var(--muted)}.combo-list .empty{color:var(--muted);cursor:default}
 .workspace{min-width:0;min-height:0;display:flex;flex-direction:column}.toolbar{background:#fff;border-bottom:1px solid var(--border);padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:nowrap}.toolbar-heading{min-width:0;flex:1}.toolbar-title{display:block;font-size:14px;font-weight:600;line-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.toolbar-comment{margin:0;font-size:12px;line-height:16px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.toolbar-actions{display:flex;gap:8px;align-items:center;flex-shrink:0;flex-wrap:nowrap}.button{min-height:34px;padding:7px 11px;border:1px solid var(--border);background:#fff;border-radius:5px;font-size:12px}.button:hover{background:#f0f4f6}.button[aria-pressed=true]{background:#edf3f7;border-color:#b3c4d0}.button.primary{background:var(--accent);border-color:var(--accent);color:white}.button.primary:hover{background:#263f50}.legend{padding:16px 22px;display:flex;gap:20px;flex-wrap:wrap;font-size:12px;color:#53636f}.legend span{display:flex;align-items:center;gap:7px}.stage{margin:0 18px 16px;flex:1;min-height:0;background:#fff;border:1px solid var(--border);overflow:auto;position:relative;overscroll-behavior:contain}.stage svg{display:block;flex-shrink:0}.comparison{border-top:1px solid var(--border);background:#fff;padding:14px 22px}.comparison summary{font-size:12px;color:var(--muted);cursor:pointer}.comparison-scroll{overflow-x:auto}.comparison table{border-collapse:collapse;width:100%;font-size:12px;margin-top:12px}.comparison th,.comparison td{text-align:right;padding:8px;border-bottom:1px solid #e8edf0;font-weight:400;font-variant-numeric:tabular-nums}.comparison th:first-child,.comparison td:first-child{text-align:left;max-width:260px;overflow-wrap:anywhere}.comparison th{color:var(--muted)}.workspace-footer{padding:10px 22px;border-top:1px solid var(--border);background:#fff;font-size:11px;color:var(--muted);display:flex;justify-content:space-between;gap:10px}.dimensions-wrap,.export-wrap{position:relative}.dimensions-menu{position:absolute;right:0;top:calc(100% + 8px);width:260px;background:#fff;border:1px solid var(--border);border-radius:6px;padding:14px;z-index:30;box-shadow:0 8px 24px #1d30451a}.dimensions-menu .switch-row{margin:0 0 14px}.distance-hint{margin:0;font-size:11px;line-height:1.5;color:var(--muted)}@media(max-width:420px){.dimensions-menu{right:-55px;width:min(260px,calc(100vw - 32px))}}.export-menu{position:absolute;right:0;top:calc(100% + 8px);width:220px;background:#fff;border:1px solid var(--border);border-radius:6px;padding:6px;z-index:30;box-shadow:0 8px 24px #1d30451a}.export-menu button{display:block;text-align:left;width:100%;background:none;border:0;padding:10px;font-size:12px;border-radius:4px}.export-menu button:hover{background:#f0f4f6}.export-menu .switch-row{margin:6px 0 4px;padding:12px 8px 8px;border-top:1px solid var(--border);font-size:11px}.notice{margin:0 18px 12px;padding:9px 12px;border:1px solid #e7c4b7;background:#fff7f2;color:#934b33;border-radius:4px;font-size:12px;line-height:1.5}.notice.success{background:#f1f6f9;border-color:#ccdce7;color:#344f61}.notice a{color:inherit;margin-left:6px}#openSettings{width:34px;padding:7px;flex-shrink:0}#openSettings svg{display:block;width:18px;height:18px}.mobile-only{display:none}#printReport{display:none}
 @media(max-width:960px){.app{grid-template-columns:minmax(0,1fr)}.sidebar{display:none;position:fixed;inset:0 auto 0 0;width:min(440px,100%);z-index:40;box-shadow:8px 0 30px #14233122}.app.settings-open .sidebar{display:block}.mobile-only{display:inline-block}.brand{position:relative;padding-right:65px}.close-settings{position:absolute;right:20px;top:25px}.toolbar{padding:12px 16px}.legend{padding:14px 16px}.stage{margin:0 10px 12px}.workspace-footer{padding:10px 16px}.comparison{padding:12px 16px}}
@@ -22,7 +22,8 @@
 <div class="app" id="app">
  <aside class="sidebar" aria-label="Pattern settings" id="settings">
   <header class="brand"><h1>Land pattern overlay</h1><p class="subtitle">Compare pads and solder terminals. All dimensions in mm.</p><button class="button mobile-only close-settings" id="closeSettings" aria-label="Close settings">×</button></header>
-  <section class="section" aria-labelledby="cHeading"><div class="section-head"><h2 id="cHeading"><i class="swatch " aria-hidden="true"></i>Competitor land pattern</h2></div>
+  <section class="section" aria-labelledby="cHeading"><div class="section-head"><h2 id="cHeading"><i class="swatch " aria-hidden="true"></i>Competitor</h2></div>
+<div class="mode" id="cTarget" role="group" aria-label="Competitor type"><button type="button" data-target="land" aria-pressed="true">Recommended Land Pattern</button><button type="button" data-target="terminal" aria-pressed="false">Terminal</button></div>
 <label class="field" for="compName">Manufacturer / part number<input id="compName" placeholder="Bourns..." maxlength="80"></label>
 <div class="mode auto" id="cMode" role="group" aria-label="Competitor calculation mode"><button type="button" data-mode="manual" aria-pressed="false">Manual</button><button type="button" data-mode="auto" aria-pressed="true">Auto resolve</button></div>
 <div class="dimension-caption"><span>Dimensions (mm)</span><button class="text-button" id="cClear" type="button" aria-label="Clear competitor dimensions">Clear</button></div><div class="dim-grid"><div class="dim-field"><label for="cL">L<span class="sub">Height</span></label><input id="cL" type="number" min="0.01" step="0.01" inputmode="decimal" aria-label="Competitor Height (L), mm" aria-describedby="cFeedback"><span class="calc-label" aria-hidden="true">Calculated</span></div>
@@ -49,7 +50,7 @@
  </aside>
  <main class="workspace">
   <header class="toolbar"><button class="button mobile-only" id="openSettings" aria-label="Open settings" title="Open settings" aria-controls="settings" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button><div class="toolbar-heading"><span class="toolbar-title" id="previewTitle">Recommended Land Pattern</span><p class="toolbar-comment" id="previewComment"></p></div><div class="toolbar-actions"><button class="button" id="toggleGrid" aria-pressed="true">Grid &amp; axes</button><div class="dimensions-wrap"><button class="button" id="toggleDimensions" aria-expanded="false" aria-controls="dimensionsMenu"><span>Dimensions</span><svg class="disclosure-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></button><div class="dimensions-menu" id="dimensionsMenu" hidden><label class="switch-row" for="showDimensions"><span>Component dimensions</span><input class="switch" id="showDimensions" type="checkbox" checked></label><label class="switch-row" for="showDistances"><span>P1–P1 distances</span><input class="switch" id="showDistances" type="checkbox" aria-describedby="distanceHint"></label><p class="distance-hint" id="distanceHint">Competitor inner edge to Panasonic inner edge, on each side. Included in exports when enabled.</p></div></div><div class="export-wrap"><button class="button primary" id="exportToggle" aria-expanded="false" aria-controls="exportMenu">Export ↓</button><div class="export-menu" id="exportMenu" hidden><button id="downloadPDF">Download PDF</button><button id="downloadPNG">Download PNG</button><button id="printButton">Print</button><label class="switch-row" for="exportGrid">Include grid and axes<input class="switch" id="exportGrid" type="checkbox" checked></label></div></div></div></header>
-  <div class="legend"><span><i class="swatch" aria-hidden="true"></i>Competitor · land pattern</span><span><i class="swatch blue" aria-hidden="true"></i>Panasonic · terminal</span></div>
+  <div class="legend"><span><i class="swatch" aria-hidden="true"></i><span id="competitorLegend">Competitor · land pattern</span></span><span><i class="swatch blue" aria-hidden="true"></i>Panasonic · terminal</span></div>
   <div class="notice" id="warning" role="status" aria-live="polite" hidden></div>
   <div class="notice" id="exportStatus" role="status" aria-live="polite" hidden></div>
   <div class="stage" id="stage"><svg id="drawing" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dimensioned land pattern overlay in millimeters"></svg></div>
@@ -646,9 +647,17 @@ function wrapLines(value,maxCharacters) {
     if((current+' '+word).trim().length>maxCharacters){lines.push(current);current=word;}else current+=(current?' ':'')+word;
   });if(current)lines.push(current);return lines;
 }
-function automaticComment(patterns) {
+function automaticTitle(competitorType='land') {
+  return competitorType==='terminal'?'Terminal':'Recommended Land Pattern';
+}
+function automaticComment(patterns,competitorType='land') {
   const panasonic=patterns.p.label.trim(),competitor=patterns.c.label.trim();
-  return 'Panasonic'+(panasonic?' '+panasonic:'')+' solder terminals on '+(competitor||'the competitor')+' recommended land pattern.';
+  return 'Panasonic'+(panasonic?' '+panasonic:'')+' solder terminals on '+(competitor||'the competitor')+(competitorType==='terminal'?' terminal':' recommended land pattern')+'.';
+}
+function exportFileBase(partNumber,competitorName,competitorType='land') {
+  const part=String(partNumber||'').trim().replace(/[^a-z0-9_-]+/gi,'_').replace(/_+/g,'_').replace(/^_+|_+$/g,'');
+  const competitor=String(competitorName||'').trim().replace(/[^a-z0-9_-]+/gi,'_').replace(/_+/g,'_').replace(/^_+|_+$/g,'');
+  return (part||'land-pattern')+'_'+(competitor||'competitor')+'_'+(competitorType==='terminal'?'terminal':'land')+'_overlay';
 }
 function panasonicURL(partNumber) {
   const pn=String(partNumber||'').trim().toUpperCase();
@@ -691,14 +700,16 @@ const view={grid:true,dimensions:true,distances:false};
 const catalog=window.PCC_CATALOG||{parts:[],suffixes:{}};
 const partMap=new Map(catalog.parts.map(p=>[p.pn.toUpperCase(),p]));
 let customComment=null;
+let customTitle=false;
+let competitorType='land';
 function syncDocument(){
-  const comment=customComment===null?automaticComment(patterns):customComment;
+  const comment=customComment===null?automaticComment(patterns,competitorType):customComment;
   if(customComment===null)byId('comment').value=comment;
-  const title=byId('mainTitle').value.trim()||'Recommended Land Pattern';
+  const title=customTitle?(byId('mainTitle').value.trim()||automaticTitle(competitorType)):automaticTitle(competitorType);
   byId('previewTitle').textContent=title;byId('previewTitle').title=title;
   byId('previewComment').textContent=comment;byId('previewComment').title=comment;
 }
-byId('mainTitle').addEventListener('input',syncDocument);
+byId('mainTitle').addEventListener('input',()=>{customTitle=true;syncDocument();});
 byId('comment').addEventListener('input',e=>{customComment=e.target.value.trim();syncDocument();});
 let renderQueued=false;
 function scheduleDraw(){if(renderQueued)return;renderQueued=true;requestAnimationFrame(()=>{renderQueued=false;draw();});}
@@ -748,6 +759,14 @@ Object.keys(patterns).forEach(id=>{
   });
 });
 byId('compName').addEventListener('input',e=>{patterns.c.label=e.target.value.trim();scheduleDraw();});
+byId('cTarget').querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>{
+  competitorType=button.dataset.target;
+  byId('cTarget').classList.toggle('terminal',competitorType==='terminal');
+  byId('cTarget').querySelectorAll('button').forEach(option=>option.setAttribute('aria-pressed',String(option===button)));
+  if(!customTitle)byId('mainTitle').value=automaticTitle(competitorType);
+  byId('competitorLegend').textContent='Competitor · '+(competitorType==='terminal'?'terminal':'land pattern');
+  syncDocument();scheduleDraw();
+}));
 
 /* Catalog picker: committing a selection loads once, independently of solver mode. */
 let pickerActive=-1,pickerItems=[];
@@ -786,25 +805,26 @@ function resolvePart(query){
   return matches.length===1?{label:matches[0].pn,dims:matches[0].dims||catalog.suffixes[matches[0].suffix]||{},part:matches[0]}:null;
 }
 function commitPart(query){
-  const resolved=resolvePart(query);if(!resolved)return false;
-  const p=patterns.p,d=resolved.dims;
-  p.values={L:format(number(d.l)),P1:'',P2:format(number(d.p2)),W1:format(number(d.w1)),W2:format(number(d.w2))};
+  const resolved=resolvePart(query),label=resolved?resolved.label:query.trim().toUpperCase();
+  if(!label)return false;
+  const p=patterns.p,d=resolved?resolved.dims:{};
+  p.values=resolved?{L:format(number(d.l)),P1:'',P2:format(number(d.p2)),W1:format(number(d.w1)),W2:format(number(d.w2))}:{L:'',P1:'',P2:'',W1:'',W2:''};
   const n=numbers(p);
   if([n.P2,n.W1,n.W2].every(v=>v!==null)&&n.P2>=n.W1+n.W2)p.values.P1=format(n.P2-n.W1-n.W2);
-  p.label=resolved.label;p.source=d.source||'';p.solved=null;p.touched={};p.sequence=0;
+  p.label=label;p.source=d.source||'';p.solved=null;p.touched={};p.sequence=0;
   p.sameWidth=n.W1!==null&&n.W2!==null&&Math.abs(n.W1-n.W2)<.001;
   if(p.mode==='auto'){p.solved='P1';solvePattern(p);}
-  byId('panPart').value=resolved.label;
+  byId('panPart').value=label;
   const source=byId('pnSource'),missing=['L','P2','W1','W2'].filter(k=>number(p.values[k])===null);
   const review=['review','manual'].includes(d.status);
   source.hidden=false;source.classList.toggle('warning',!!missing.length||review);
   const sourceText=document.createElement('span');
-  sourceText.textContent=[d.pcb_type,d.source,d.status==='review'?'Review dimensions against the datasheet':null,missing.length?'Missing '+missing.join(', ')+': enter these dimensions manually.':null].filter(Boolean).join(' · ')||'Dimensions loaded.';
+  sourceText.textContent=resolved?([d.pcb_type,d.source,d.status==='review'?'Review dimensions against the datasheet':null,missing.length?'Missing '+missing.join(', ')+': enter these dimensions manually.':null].filter(Boolean).join(' · ')||'Dimensions loaded.'):'Part number entered manually · enter terminal dimensions below.';
   source.replaceChildren(sourceText);
-  const partURL=resolved.part?panasonicURL(resolved.part.pn):null;
+  const partURL=panasonicURL(resolved&&resolved.part?resolved.part.pn:label);
   if(partURL){
     const link=document.createElement('a');link.className='datasheet-link';link.href=partURL;link.target='_blank';link.rel='noopener noreferrer';
-    link.textContent='↗ Datasheet';link.setAttribute('aria-label','Datasheet for '+resolved.part.pn+' (opens in a new tab)');source.append(link);
+    link.textContent='↗ Datasheet';link.setAttribute('aria-label','Datasheet for '+label+' (opens in a new tab)');source.append(link);
   }
   closePicker();paintPattern('p');return true;
 }
@@ -849,8 +869,8 @@ byId('exportToggle').addEventListener('click',()=>{const menu=byId('exportMenu')
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){const wasDimensionsOpen=!byId('dimensionsMenu').hidden;closeExport();closeDimensions();setSettings(false);if(wasDimensionsOpen)byId('toggleDimensions').focus();}});
 function setSettings(open){byId('app').classList.toggle('settings-open',open);byId('openSettings').setAttribute('aria-expanded',open);if(open)byId('closeSettings').focus();}
 byId('openSettings').addEventListener('click',()=>setSettings(true));byId('closeSettings').addEventListener('click',()=>{setSettings(false);byId('openSettings').focus();});
-const currentReport=()=>{syncDocument();return reportSVG(patterns,byId('mainTitle').value.trim(),byId('comment').value.trim(),byId('exportGrid').checked,view.distances);};
-const fileBase=()=>(([patterns.p.label,patterns.c.label].map(label=>label.trim().replace(/[^a-z0-9_-]+/gi,'_').replace(/_+/g,'_').replace(/^_+|_+$/g,'')).filter(Boolean).join('_'))||'land-pattern')+'_overlay';
+const currentReport=()=>{syncDocument();return reportSVG(patterns,byId('previewTitle').textContent,byId('comment').value.trim(),byId('exportGrid').checked,view.distances);};
+const fileBase=()=>exportFileBase(patterns.p.label,patterns.c.label,competitorType);
 async function saveBlob(blob,name){
   const url=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('Could not prepare download.'));reader.readAsDataURL(blob);});
   const status=byId('exportStatus'),link=document.createElement('a');
@@ -875,7 +895,7 @@ async function makePDF(){
     documentPDF.line(x,y+1.5,x+textWidth,y+1.5);
     documentPDF.link(x,y-size,textWidth,size+3,{url:label.getAttribute('data-part-url')});
   });
-  documentPDF.setProperties({title:byId('mainTitle').value||'Land Pattern Overlay',subject:'Dimensioned land pattern comparison'});
+  documentPDF.setProperties({title:byId('previewTitle').textContent||'Land Pattern Overlay',subject:'Dimensioned land pattern comparison'});
   return documentPDF.output('blob');
 }
 async function makePNG(){

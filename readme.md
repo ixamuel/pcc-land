@@ -6,7 +6,7 @@ A single offline HTML file for comparing competitor land patterns with Panasonic
 
 1. Open `index.html`, or serve this folder locally with `python3 -m http.server 8765` and visit `http://127.0.0.1:8765/`.
 2. Enter the competitor manufacturer / part number and dimensions.
-3. Select a Panasonic part or enter its full part number and press Enter to load available datasheet dimensions.
+3. Select a Panasonic part or enter a part number and press Enter to confirm it. Catalog matches load datasheet dimensions; other part numbers remain selected for manual dimension entry.
 4. Choose Manual or Auto resolve and adjust dimensions as needed. Use **Same width** when W1 and W2 should stay linked.
 5. Use **Dimensions** to show component annotations or optional P1–P1 distances, then **Export** to download PDF/PNG or print.
 
@@ -16,15 +16,16 @@ Inputs are held only for the current page session; refreshing resets them. Expor
 
 - A full-height 440 px light sidebar, with a hamburger button opening the Settings drawer at 960 px and below.
 - One combined competitor manufacturer / part-number field.
+- A **Recommended Land Pattern / Terminal** selector identifies the competitor geometry and updates the report title, automatic comment, and export filename.
 - Five dimension inputs on one row: **L, P1, P2, W1, W2**, with **Height, Inner gap, Total span, Left width, Right width** subtitles.
 - Independent **Manual / Auto resolve** controls for each component. Manual mode never runs the solver. Auto mode calculates a dependent value; editing that value moves the calculation to another field.
 - **Same width** explicitly links W1 and W2 in either mode. Enabling it uses the last edited width (or the other populated width). Unlinked widths can differ; the solver never assumes they are equal.
-- Selecting a catalog part, or entering a recognized part or suffix and pressing Enter, loads its datasheet dimensions once. For example, `ETQP3M4R7KVN` or `KFN`. No load button is needed. Unequal catalog widths automatically disable the width link.
+- Selecting a catalog part, or entering a recognized part or suffix and pressing Enter, loads its datasheet dimensions once. For example, `ETQP3M4R7KVN` or `KFN`. An unrecognized hand-entered part number is still committed on Enter, with blank dimensions ready for manual entry. No load button is needed. Unequal catalog widths automatically disable the width link.
 - A selected full Panasonic part adds a blue **↗ Datasheet** link beside its source text, opening its Panasonic product page in a new tab. The PDF component table links the blue, underlined part number to the same page. Suffix-only selections and cleared selections have no link.
 - A copy icon sits inside the selected Panasonic part-number field, immediately left of the chevron. It copies only the committed full part number, shows a checkmark for 1.5 seconds after success, and announces success to screen readers. It is hidden while the picker is open, for suffix-only selections, and when empty. If clipboard access fails, a message explains how to copy manually.
 - Matching SVG chevrons on the part picker, Document settings, Dimension guide, and Dimensions rotate in 160 ms. Reduced-motion preferences disable the transitions. Export keeps its plain down arrow and opens immediately.
 - Missing datasheet dimensions remain blank and are identified in the source message; body length is not substituted for terminal span.
-- Title and comment appear in the main header and remain editable under Document settings. The default title is **Recommended Land Pattern**. Comments automatically name the selected Panasonic part and competitor using “Panasonic [PN] solder terminals on [competitor] recommended land pattern.”; a manually edited comment is preserved.
+- Title and comment appear in the main header and remain editable under Document settings. The default title is **Recommended Land Pattern** or **Terminal**, according to the competitor selector. Automatic comments name the selected Panasonic part and competitor, ending in “recommended land pattern” or “terminal”; a manually edited comment or title is preserved.
 - Red Clear actions sit beside Dimensions (mm). The drawing automatically fits its space; there are no zoom controls.
 
 ## Drawing and downloads
@@ -42,7 +43,7 @@ For centered, equal-width pads, each side is `D = (P1_Panasonic − P1_competito
 
 Positive values mean the Panasonic inner edge lies to the left of the competitor inner edge on the left terminal, or to its right on the right terminal. Negative values reverse that relationship. These are geometric offsets, not a pass/fail assessment of soldering suitability.
 
-**Export** offers PDF, PNG, and Print. Reports show the title and wrapped comment first, followed by the colored component table and annotated overlay. There is no separate COMMENT footer or repeated legend sentence. Grid and axes are optional and on by default. PDF is vector A4 landscape, labeled “Not to physical scale”; PNG is 2400 × 1696. Download filenames use `[Panasonic PN]_[competitor]_overlay.pdf` or `.png`, with spaces and unsafe filename characters replaced by underscores. Empty names are omitted; if both are empty, the name is `land-pattern_overlay`. An export-ready link allows retrying a download. Incomplete patterns are identified in the report footer.
+**Export** offers PDF, PNG, and Print. Reports show the title and wrapped comment first, followed by the colored component table and annotated overlay. There is no separate COMMENT footer or repeated legend sentence. Grid and axes are optional and on by default. PDF is vector A4 landscape, labeled “Not to physical scale”; PNG is 2400 × 1696. Download filenames use `[Panasonic PN]_[Manufacturer or part number]_land_overlay.pdf` or `[Panasonic PN]_[Manufacturer or part number]_terminal_overlay.pdf` (and the equivalent `.png` names), with unsafe filename characters replaced by underscores. If a name is empty, it is replaced with `land-pattern` or `competitor`. An export-ready link allows retrying a download. Incomplete patterns are identified in the report footer.
 
 PDF libraries and the part catalog are bundled into the HTML so exports work offline. The Datasheet links open the selected part’s Panasonic product page and require an internet connection. PNG is a static image and has no clickable links. See [PDF dependency notes](docs/pdf-dependencies.md) for versions, licenses, and update instructions.
 
